@@ -1,1 +1,1 @@
-# KTMT_Project1
+# First, solve the problem. Then, write the code.
