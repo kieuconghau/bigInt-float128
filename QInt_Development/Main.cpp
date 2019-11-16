@@ -4,9 +4,9 @@ int main() {
 	QInt x;
 	
 	scanQInt(x);
-	for (int i = 0; i < 4; ++i) {
-		cout << x.data[i] << endl;
-	}
+	printBin(x);
+
+	printBin(x << 100);
 
 	return 0;
 }

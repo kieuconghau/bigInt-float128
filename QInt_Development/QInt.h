@@ -5,12 +5,19 @@
 #include <cstdint>
 using namespace std;
 
-#define BYTE 16			// BigInt 16 bytes
-#define PART_SIZE 9
+
+#define BYTE_SIZE 16									// BigInt 16 bytes
+#define BIT_SIZE BYTE_SIZE * 8							// 128
+#define PART_SIZE 9										// Depend on the type of QInt.data
+
+#define DATA_COUNT BYTE_SIZE / sizeof(uint32_t)			// 4
+#define UINT_BIT_SIZE sizeof(uint32_t) * 8				// 32
+
 
 struct QInt {
-	uint32_t data[BYTE / sizeof(uint32_t)] = {};
+	uint32_t data[DATA_COUNT] = {};
 };
+
 
 void scanQInt(QInt& x);
 
@@ -28,6 +35,8 @@ string decStrAddDecStr(string str1, string str2);
 
 bool* decToBin(QInt x);
 
+void printBin(QInt x);
+
 QInt binToDec(bool* bit);
 
-QInt& operator<<(QInt& x, size_t i);
+QInt& operator<<(QInt& x, size_t shift_bit_num);

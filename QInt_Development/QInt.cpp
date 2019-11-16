@@ -11,13 +11,13 @@ void scanQInt(QInt& x) {
 		str[0] = '0';
 	}
 
-	bool* bit = new bool[BYTE * 8]();
-	bool is_not_overflow = decStrToBinStr(str, bit, BYTE * 8);
+	bool* bit = new bool[BIT_SIZE]();
+	bool is_not_overflow = decStrToBinStr(str, bit, BIT_SIZE);
 
 	if (is_not_overflow) {
 		/* Negative */
 		if (is_negative) {
-			int i = BYTE * 8 - 1;
+			int i = BIT_SIZE - 1;
 			
 			while (bit[i--] == 0);
 
@@ -123,11 +123,30 @@ string decStrAddDecStr(string str1, string str2) {
 
 /* c. Decimal (QInt) to Binary sequence */
 bool* decToBin(QInt x) {
-	bool* bit = new bool[BYTE * 8]();
+	bool* bit = new bool[BIT_SIZE]();
 
-
+	for (int i = BIT_SIZE - 1; i >= 0; --i) {
+		bit[i] = (x.data[i / 32] >> (31 - i % 32)) & 1;
+	}
 
 	return bit;
+}
+
+
+/* Print QInt as a Binary sequence */
+void printBin(QInt x) {
+	bool* bit = decToBin(x);
+
+	for (int i = 0; i < BIT_SIZE; ++i) {
+		cout << bit[i];
+		
+		if (i % 8 == 7)
+			cout << " ";
+		if (i % 32 == 31)
+			cout << endl;
+	}
+
+	delete[] bit;
 }
 
 
@@ -136,7 +155,7 @@ QInt binToDec(bool* bit) {
 	QInt x;
 	int k;
 
-	for (int i = BYTE * 8 - 1; i >= 0; --i) {
+	for (int i = BIT_SIZE - 1; i >= 0; --i) {
 		if (bit[i]) {
 			k = i / 32;
 			x.data[k] = x.data[k] | (1 << (31 - i % 32));
@@ -148,8 +167,23 @@ QInt binToDec(bool* bit) {
 
 
 /* j. Shift left << */
-QInt& operator<<(QInt& x, size_t i) {
+QInt& operator<<(QInt& x, size_t shift_bit_num) {
+	int q = shift_bit_num / 32;
+	int r = shift_bit_num % 32;
+	int i = q;
 
+	while(i < DATA_COUNT - 1) {
+		x.data[i - q] = (x.data[i] << r) | (x.data[i + 1] >> (32 - r));
+		++i;
+	}
+	
+	x.data[i - q] = x.data[i] << r;
+	
+	i = i - q + 1;
+	while (i < DATA_COUNT) {
+		x.data[i] = 0;
+		++i;
+	}
 
 	return x;
 }
