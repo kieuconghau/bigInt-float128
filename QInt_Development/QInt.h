@@ -39,4 +39,4 @@ void printBin(QInt x);
 
 QInt binToDec(bool* bit);
 
-QInt& operator<<(QInt& x, size_t shift_bit_num);
+QInt operator<<(QInt x, size_t shift_bit_num);

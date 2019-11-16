@@ -167,7 +167,7 @@ QInt binToDec(bool* bit) {
 
 
 /* j. Shift left << */
-QInt& operator<<(QInt& x, size_t shift_bit_num) {
+QInt operator<<(QInt x, size_t shift_bit_num) {
 	int q = shift_bit_num / 32;
 	int r = shift_bit_num % 32;
 	int i = q;

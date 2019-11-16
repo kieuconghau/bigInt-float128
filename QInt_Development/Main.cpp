@@ -6,7 +6,7 @@ int main() {
 	scanQInt(x);
 	printBin(x);
 
-	printBin(x << 100);
+	printBin(x << 1 << 1);
 
 	return 0;
 }
