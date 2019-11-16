@@ -168,21 +168,71 @@ QInt binToDec(bool* bit) {
 
 /* j. Shift left << */
 QInt operator<<(QInt x, size_t shift_bit_num) {
-	int q = shift_bit_num / 32;
-	int r = shift_bit_num % 32;
-	int i = q;
+	if (shift_bit_num < BIT_SIZE) {
+		int q = shift_bit_num / 32;
+		int r = shift_bit_num % 32;
+		int i = q;
 
-	while(i < DATA_COUNT - 1) {
-		x.data[i - q] = (x.data[i] << r) | (x.data[i + 1] >> (32 - r));
-		++i;
+		while (i < DATA_COUNT - 1) {
+			x.data[i - q] = (x.data[i] << r) | (x.data[i + 1] >> (32 - r));
+			++i;
+		}
+
+		x.data[i - q] = x.data[i] << r;
+
+		i = i - q + 1;
+		while (i < DATA_COUNT) {
+			x.data[i] = 0;
+			++i;
+		}
 	}
-	
-	x.data[i - q] = x.data[i] << r;
-	
-	i = i - q + 1;
-	while (i < DATA_COUNT) {
-		x.data[i] = 0;
-		++i;
+	else {
+		for (int i = 0; i < DATA_COUNT; ++i)
+			x.data[i] = 0;
+	}
+
+	return x;
+}
+
+/* j. Shift right */
+QInt operator>>(QInt x, size_t shift_bit_num) {
+	bool is_negative = (x.data[0] >> 31) == 1;
+
+	if (shift_bit_num < BIT_SIZE) {
+		int q = shift_bit_num / 32;
+		int r = shift_bit_num % 32;
+		int i = DATA_COUNT - 1 - q;
+
+		while (i > 0) {
+			x.data[i + q] = (x.data[i] >> r) | (x.data[i - 1] << (32 - r));
+			--i;
+		}
+
+		x.data[i + q] = x.data[i] >> r;
+
+		if (is_negative) {
+			for (int j = 0; j < shift_bit_num; ++j) {
+				x.data[j / 32] |= (1 << (31 - j % 32));
+			}
+		}
+		else {
+			i = i + q - 1;
+			while (i >= 0) {
+				x.data[i] = 0;
+				--i;
+			}
+		}
+	}
+	else {
+		if (is_negative) {
+			for (int j = 0; j < BIT_SIZE; ++j) {
+				x.data[j / 32] |= (1 << (31 - j % 32));
+			}
+		}
+		else {
+			for (int i = 0; i < DATA_COUNT; ++i)
+				x.data[i] = 0;
+		}
 	}
 
 	return x;
