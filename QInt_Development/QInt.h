@@ -2,13 +2,14 @@
 
 #include <iostream>
 #include <string>
+#include <cstdint>
 using namespace std;
 
 #define BYTE 16			// BigInt 16 bytes
 #define PART_SIZE 9
 
 struct QInt {
-	size_t data[BYTE / sizeof(size_t)] = {};
+	uint32_t data[BYTE / sizeof(uint32_t)] = {};
 };
 
 void scanQInt(QInt& x);
