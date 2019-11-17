@@ -11,7 +11,7 @@ int main() {
 	printBin(y);
 	cout << endl;
 
-	printBin(x - y);
+	cout << (x == y);
 	cout << endl;
 
 	return 0;
