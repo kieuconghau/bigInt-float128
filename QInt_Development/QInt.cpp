@@ -249,6 +249,17 @@ QInt operator&(QInt x, QInt y) {
 	return x;
 }
 
+
+/* i. OR */
+QInt operator|(QInt x, QInt y) {
+	for (int i = 0; i < DATA_COUNT; ++i) {
+		x.data[i] |= y.data[i];
+	}
+
+	return x;
+}
+
+
 /* j. Rotate left */
 QInt rol(QInt x, size_t rotate_bit_num) {
 	rotate_bit_num %= BIT_SIZE;

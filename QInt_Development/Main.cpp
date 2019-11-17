@@ -9,7 +9,7 @@ int main() {
 	cout << endl;
 	printBin(y);
 	cout << endl;
-	printBin(x & y);
+	printBin(x | y);
 
 	return 0;
 }
