@@ -42,3 +42,9 @@ QInt binToDec(bool* bit);
 QInt operator<<(QInt x, size_t shift_bit_num);
 
 QInt operator>>(QInt x, size_t shift_bit_num);
+
+QInt operator&(QInt x, QInt y);
+
+QInt rol(QInt x, size_t shift_bit_num);
+
+QInt ror(QInt x, size_t rotate_bit_num);

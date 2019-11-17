@@ -194,6 +194,7 @@ QInt operator<<(QInt x, size_t shift_bit_num) {
 	return x;
 }
 
+
 /* j. Shift right */
 QInt operator>>(QInt x, size_t shift_bit_num) {
 	bool is_negative = (x.data[0] >> 31) == 1;
@@ -234,6 +235,35 @@ QInt operator>>(QInt x, size_t shift_bit_num) {
 				x.data[i] = 0;
 		}
 	}
+
+	return x;
+}
+
+
+/* i. AND */
+QInt operator&(QInt x, QInt y) {
+	for (int i = 0; i < DATA_COUNT; ++i) {
+		x.data[i] &= y.data[i];
+	}
+
+	return x;
+}
+
+/* j. Rotate left */
+QInt rol(QInt x, size_t rotate_bit_num) {
+	rotate_bit_num %= BIT_SIZE;
+
+
+
+	return x;
+}
+
+
+/* j. Rotate right */
+QInt ror(QInt x, size_t rotate_bit_num) {
+	rotate_bit_num %= BIT_SIZE;
+
+
 
 	return x;
 }
