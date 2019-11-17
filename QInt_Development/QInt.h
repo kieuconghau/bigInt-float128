@@ -16,6 +16,8 @@ using namespace std;
 
 struct QInt {
 	uint32_t data[DATA_COUNT] = {};
+
+	QInt& operator=(QInt const & x);
 };
 
 

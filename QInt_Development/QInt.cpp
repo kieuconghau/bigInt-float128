@@ -295,6 +295,16 @@ bool operator>=(QInt x, QInt y) {
 }
 
 
+/* h. = */
+QInt& QInt::operator=(QInt const & x) {
+	for (int i = 0; i < DATA_COUNT; ++i) {
+		this->data[i] = x.data[i];
+	}
+	
+	return *this;
+}
+
+
 /* i. AND */
 QInt operator&(QInt x, QInt y) {
 	for (int i = 0; i < DATA_COUNT; ++i) {
