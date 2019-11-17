@@ -37,7 +37,6 @@ void scanQInt(QInt& x) {
 	}
 	else {
 		cout << "\aError: Overflow" << endl;
-		throw;
 	}
 
 	delete[] bit;
@@ -183,6 +182,7 @@ QInt operator+(QInt x, QInt y) {
 		b = (y.data[i / 32] >> (31 - i % 32)) & 1;
 		
 		sum.data[i / 32] |= (a ^ b ^ r) << (31 - i % 32);
+		
 		r = (a + b + r) >> 1;
 	}
 
@@ -196,7 +196,26 @@ QInt operator+(QInt x, QInt y) {
 
 /* g. - */
 QInt operator-(QInt x, QInt y) {
-	
+	QInt dif;
+	uint32_t a;				// get the i_th bit of x from 127 to 0
+	uint32_t b;				// get the i_th bit of y from 127 to 0
+	uint32_t d = 0;			// debt
+
+	for (int i = BIT_SIZE - 1; i >= 0; --i) {
+		a = (x.data[i / 32] >> (31 - i % 32)) & 1;
+		b = (y.data[i / 32] >> (31 - i % 32)) & 1;
+
+		dif.data[i / 32] |= (a ^ b ^ d) << (31 - i % 32);
+
+		a += 2;				// borrow
+		d = (a >> 1) - ((a - b - d) >> 1);
+	}
+
+	if (d == 1) {
+		cout << "\aWarning: overflow" << endl;
+	}
+
+	return dif;
 }
 
 /* i. AND */
