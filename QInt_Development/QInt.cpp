@@ -241,6 +241,26 @@ bool operator==(QInt x, QInt y) {
 }
 
 
+/* h. > */
+bool operator>(QInt x, QInt y) {
+	// Convert the range from [1000...000, 0111...111] to [0000...000, 1111...111] -> easier comparison
+	x.data[0] += 1 << 31;
+	y.data[0] += 1 << 31;
+
+	// Compare (NOTE: now, x and y are not in 2's complement representation)
+	uint32_t a;			// get the i_th bit of x from 0 to 127
+	uint32_t b;			// get the i_th bit of y from 0 to 127
+	for (int i = 0; i < BIT_SIZE; ++i) {
+		a = (x.data[i / 32] >> (31 - i % 32)) & 1;
+		b = (y.data[i / 32] >> (31 - i % 32)) & 1;
+
+		if (a != b)
+			return a > b;
+	}
+
+	return false;		// x == y
+}
+
 
 /* i. AND */
 QInt operator&(QInt x, QInt y) {
