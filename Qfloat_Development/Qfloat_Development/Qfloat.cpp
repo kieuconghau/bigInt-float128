@@ -154,3 +154,22 @@ void printBinaryQfloat(Qfloat x) {
 		if (i % 16 == 15) cout << "\n";
 	}
 }
+
+Qfloat binToDec(bool *bit) {
+	Qfloat x;
+
+	for (int i = 0; i < BITS; i++) {
+		int idx = (int)(i / 32);
+		x.data[idx] = x.data[idx] | (bit[i] << (31 - (i - 32 * idx)));
+	}
+	return x;
+}
+
+bool *decToBin(Qfloat x) {
+	bool *bit = new bool [BITS];
+
+	for (int i = 0; i < BITS; i++) {
+		int idx = (int)(i / 32);
+		bit[i] = (x.data[idx] >> (31 - (i % 32))) & 1;
+	}
+}

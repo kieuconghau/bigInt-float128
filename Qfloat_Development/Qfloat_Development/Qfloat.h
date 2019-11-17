@@ -25,3 +25,5 @@ bool processFractionalPart(string fractional, int nFrac, int *_frac, vector <boo
 
 void scanQfloat(Qfloat &x);
 void printBinaryQfloat(Qfloat x);
+
+Qfloat binToDec(bool *bit);
