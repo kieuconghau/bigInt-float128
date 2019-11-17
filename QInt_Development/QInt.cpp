@@ -1,5 +1,10 @@
 #include "QInt.h"
 
+bool isNegative(QInt x) {
+	return (x.data[0] >> 31) == 1;
+}
+
+
 /* a. Scan QInt */
 void scanQInt(QInt& x) {
 	string str;
@@ -102,7 +107,7 @@ void printQInt(QInt x) {
 
 
 /* Decimal string multiple 2 */
-string decStrMultiple2(string str) {	// Factor = 2
+string decStrMultiply2(string str) {	// Factor = 2
 	string product(str.size() + 1, 0);
 
 
@@ -166,77 +171,22 @@ QInt binToDec(bool* bit) {
 }
 
 
-/* j. Shift left << */
-QInt operator<<(QInt x, size_t shift_bit_num) {
-	if (shift_bit_num < BIT_SIZE) {
-		int q = shift_bit_num / 32;
-		int r = shift_bit_num % 32;
-		int i = q;
+/* g. + */
+QInt operator+(QInt x, QInt y) {
+	QInt sum;
+	uint32_t a;				// get the i_th bit of x from 127 to 0
+	uint32_t b;				// get the i_th bit of y from 127 to 0
+	uint32_t r = 0;			// remainder
 
-		while (i < DATA_COUNT - 1) {
-			x.data[i - q] = (x.data[i] << r) | (x.data[i + 1] >> (32 - r));
-			++i;
-		}
-
-		x.data[i - q] = x.data[i] << r;
-
-		i = i - q + 1;
-		while (i < DATA_COUNT) {
-			x.data[i] = 0;
-			++i;
-		}
-	}
-	else {
-		for (int i = 0; i < DATA_COUNT; ++i)
-			x.data[i] = 0;
+	for (int i = BIT_SIZE - 1; i >= 0; --i) {
+		a = (x.data[i / 32] >> (31 - i % 32)) & 1;
+		b = (y.data[i / 32] >> (31 - i % 32)) & 1;
+		
+		sum.data[i / 32] = sum.data[i / 32] | ((a ^ b ^ r) << (31 - i % 32));
+		r = (a + b + r) >> 1;
 	}
 
-	return x;
-}
-
-
-/* j. Shift right */
-QInt operator>>(QInt x, size_t shift_bit_num) {
-	bool is_negative = (x.data[0] >> 31) == 1;
-
-	if (shift_bit_num < BIT_SIZE) {
-		int q = shift_bit_num / 32;
-		int r = shift_bit_num % 32;
-		int i = DATA_COUNT - 1 - q;
-
-		while (i > 0) {
-			x.data[i + q] = (x.data[i] >> r) | (x.data[i - 1] << (32 - r));
-			--i;
-		}
-
-		x.data[i + q] = x.data[i] >> r;
-
-		if (is_negative) {
-			for (int j = 0; j < shift_bit_num; ++j) {
-				x.data[j / 32] |= (1 << (31 - j % 32));
-			}
-		}
-		else {
-			i = i + q - 1;
-			while (i >= 0) {
-				x.data[i] = 0;
-				--i;
-			}
-		}
-	}
-	else {
-		if (is_negative) {
-			for (int j = 0; j < BIT_SIZE; ++j) {
-				x.data[j / 32] |= (1 << (31 - j % 32));
-			}
-		}
-		else {
-			for (int i = 0; i < DATA_COUNT; ++i)
-				x.data[i] = 0;
-		}
-	}
-
-	return x;
+	return sum;
 }
 
 
@@ -274,6 +224,80 @@ QInt operator^(QInt x, QInt y) {
 QInt operator~(QInt x) {
 	for (int i = 0; i < DATA_COUNT; ++i) {
 		x.data[i] = ~x.data[i];
+	}
+
+	return x;
+}
+
+
+/* j. Shift left << */
+QInt operator<<(QInt x, size_t shift_bit_num) {
+	if (shift_bit_num < BIT_SIZE) {
+		int q = shift_bit_num / 32;
+		int r = shift_bit_num % 32;
+		int i = q;
+
+		while (i < DATA_COUNT - 1) {
+			x.data[i - q] = (x.data[i] << r) | (x.data[i + 1] >> (32 - r));
+			++i;
+		}
+
+		x.data[i - q] = x.data[i] << r;
+
+		i = i - q + 1;
+		while (i < DATA_COUNT) {
+			x.data[i] = 0;
+			++i;
+		}
+	}
+	else {
+		for (int i = 0; i < DATA_COUNT; ++i)
+			x.data[i] = 0;
+	}
+
+	return x;
+}
+
+
+/* j. Shift right */
+QInt operator>>(QInt x, size_t shift_bit_num) {
+	bool is_negative = isNegative(x);
+
+	if (shift_bit_num < BIT_SIZE) {
+		int q = shift_bit_num / 32;
+		int r = shift_bit_num % 32;
+		int i = DATA_COUNT - 1 - q;
+
+		while (i > 0) {
+			x.data[i + q] = (x.data[i] >> r) | (x.data[i - 1] << (32 - r));
+			--i;
+		}
+
+		x.data[i + q] = x.data[i] >> r;
+
+		if (is_negative) {
+			for (int j = 0; j < shift_bit_num; ++j) {
+				x.data[j / 32] |= (1 << (31 - j % 32));
+			}
+		}
+		else {
+			i = i + q - 1;
+			while (i >= 0) {
+				x.data[i] = 0;
+				--i;
+			}
+		}
+	}
+	else {
+		if (is_negative) {
+			for (int j = 0; j < BIT_SIZE; ++j) {
+				x.data[j / 32] |= (1 << (31 - j % 32));
+			}
+		}
+		else {
+			for (int i = 0; i < DATA_COUNT; ++i)
+				x.data[i] = 0;
+		}
 	}
 
 	return x;

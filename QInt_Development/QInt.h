@@ -19,6 +19,9 @@ struct QInt {
 };
 
 
+bool isNegative(QInt x);
+
+
 void scanQInt(QInt& x);
 
 bool decStrToBinStr(string str, bool* bit, int bit_size);
@@ -27,11 +30,13 @@ string decStrDivide2(string str);
 
 bool decStrMod2(string str);
 
+
 void printQInt(QInt x);
 
-string decStrMultiple2(string str);
+string decStrMultiply2(string str);
 
 string decStrAddDecStr(string str1, string str2);
+
 
 bool* decToBin(QInt x);
 
@@ -39,9 +44,9 @@ void printBin(QInt x);
 
 QInt binToDec(bool* bit);
 
-QInt operator<<(QInt x, size_t shift_bit_num);
 
-QInt operator>>(QInt x, size_t shift_bit_num);
+QInt operator+(QInt x, QInt y);
+
 
 QInt operator&(QInt x, QInt y);
 
@@ -50,6 +55,11 @@ QInt operator|(QInt x, QInt y);
 QInt operator^(QInt x, QInt y);
 
 QInt operator~(QInt x);
+
+
+QInt operator<<(QInt x, size_t shift_bit_num);
+
+QInt operator>>(QInt x, size_t shift_bit_num);
 
 QInt rol(QInt x, size_t shift_bit_num);
 

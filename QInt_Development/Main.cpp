@@ -1,15 +1,18 @@
 #include "QInt.h"
 
 int main() {
-	QInt x;
+	QInt x, y;
 	scanQInt(x);
+	scanQInt(y);
 
 	printBin(x);
-	printBin(~x);
-	x = ~x;
-	printBin(x);
-	x = ~~x;
-	printBin(x);
+	cout << endl;
+
+	printBin(y);
+	cout << endl;
+
+	printBin(x + y);
+	cout << endl;
 
 	return 0;
 }
