@@ -21,6 +21,10 @@ struct QInt {
 
 bool isNegative(QInt x);
 
+bool isPositive(QInt x);
+
+bool isZero(QInt x);
+
 
 void scanQInt(QInt& x);
 

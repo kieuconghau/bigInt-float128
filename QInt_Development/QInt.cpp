@@ -4,6 +4,18 @@ bool isNegative(QInt x) {
 	return (x.data[0] >> 31) == 1;
 }
 
+bool isPositive(QInt x) {
+	return !isNegative(x) && !isZero(x);
+}
+
+bool isZero(QInt x) {
+	for (int i = 0; i < DATA_COUNT; ++i) {
+		if (x.data[i] != 0)
+			return false;
+	}
+	return true;
+}
+
 
 /* a. Scan QInt */
 void scanQInt(QInt& x) {
@@ -217,6 +229,11 @@ QInt operator-(QInt x, QInt y) {
 
 	return dif;
 }
+
+
+/* g. * */
+
+
 
 /* i. AND */
 QInt operator&(QInt x, QInt y) {
