@@ -262,6 +262,13 @@ bool operator>(QInt x, QInt y) {
 }
 
 
+/* h. <= */
+bool operator<=(QInt x, QInt y) {
+	return !(x > y);
+}
+
+
+
 /* i. AND */
 QInt operator&(QInt x, QInt y) {
 	for (int i = 0; i < DATA_COUNT; ++i) {

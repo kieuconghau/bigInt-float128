@@ -58,6 +58,8 @@ bool operator==(QInt x, QInt y);
 
 bool operator>(QInt x, QInt y);
 
+bool operator<=(QInt x, QInt y);
+
 
 QInt operator&(QInt x, QInt y);
 
