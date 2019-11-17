@@ -47,6 +47,8 @@ QInt binToDec(bool* bit);
 
 QInt operator+(QInt x, QInt y);
 
+QInt operator-(QInt x, QInt y);
+
 
 QInt operator&(QInt x, QInt y);
 

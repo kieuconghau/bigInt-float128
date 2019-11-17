@@ -182,13 +182,22 @@ QInt operator+(QInt x, QInt y) {
 		a = (x.data[i / 32] >> (31 - i % 32)) & 1;
 		b = (y.data[i / 32] >> (31 - i % 32)) & 1;
 		
-		sum.data[i / 32] = sum.data[i / 32] | ((a ^ b ^ r) << (31 - i % 32));
+		sum.data[i / 32] |= (a ^ b ^ r) << (31 - i % 32);
 		r = (a + b + r) >> 1;
+	}
+
+	if (r == 1) {
+		cout << "\aWarning: overflow" << endl;
 	}
 
 	return sum;
 }
 
+
+/* g. - */
+QInt operator-(QInt x, QInt y) {
+	
+}
 
 /* i. AND */
 QInt operator&(QInt x, QInt y) {
