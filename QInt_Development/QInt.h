@@ -76,10 +76,14 @@ QInt operator^(QInt x, QInt y);
 QInt operator~(QInt x);
 
 
-QInt operator<<(QInt x, size_t shift_bit_num);
+QInt operator<<(QInt x, int shift_bit_num);
 
-QInt operator>>(QInt x, size_t shift_bit_num);
+QInt logicalShiftLeft(QInt x, int shift_bit_num);
 
-QInt rol(QInt x, size_t shift_bit_num);
+QInt operator>>(QInt x, int shift_bit_num);
 
-QInt ror(QInt x, size_t rotate_bit_num);
+QInt logicalShiftRight(QInt x, int shift_bit_num);
+
+QInt rol(QInt x, int shift_bit_num);
+
+QInt ror(QInt x, int rotate_bit_num);

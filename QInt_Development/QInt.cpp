@@ -345,74 +345,97 @@ QInt operator~(QInt x) {
 }
 
 
-/* j. Shift left << */
-QInt operator<<(QInt x, size_t shift_bit_num) {
-	if (shift_bit_num < BIT_SIZE) {
-		int q = shift_bit_num / 32;
-		int r = shift_bit_num % 32;
-		int i = q;
+/* j. Shift left << (arithmetic) */
+QInt operator<<(QInt x, int shift_bit_num) {
+	return logicalShiftLeft(x, shift_bit_num);
+}
 
-		while (i < DATA_COUNT - 1) {
+/* Logical shift left */
+QInt logicalShiftLeft(QInt x, int shift_bit_num) {
+	while (shift_bit_num < 0)
+		shift_bit_num += BIT_SIZE;
+
+	shift_bit_num %= BIT_SIZE;
+	
+	if (shift_bit_num == 0)
+		return x;
+
+	int q = shift_bit_num / 32;
+	int r = shift_bit_num % 32;
+	int i = q;
+
+	while (i < DATA_COUNT - 1) {
+		if (r == 0)
+			x.data[i - q] = x.data[i];
+		else
 			x.data[i - q] = (x.data[i] << r) | (x.data[i + 1] >> (32 - r));
-			++i;
-		}
 
-		x.data[i - q] = x.data[i] << r;
-
-		i = i - q + 1;
-		while (i < DATA_COUNT) {
-			x.data[i] = 0;
-			++i;
-		}
+		++i;
 	}
-	else {
-		for (int i = 0; i < DATA_COUNT; ++i)
-			x.data[i] = 0;
+
+	x.data[i - q] = x.data[i] << r;
+
+	i = i - q + 1;
+	while (i < DATA_COUNT) {
+		x.data[i] = 0;
+		++i;
 	}
 
 	return x;
 }
 
-
-/* j. Shift right */
-QInt operator>>(QInt x, size_t shift_bit_num) {
+/* j. Shift right >> (arithmetic) */
+QInt operator>>(QInt x, int shift_bit_num) {
 	bool is_negative = isNegative(x);
 
-	if (shift_bit_num < BIT_SIZE) {
-		int q = shift_bit_num / 32;
-		int r = shift_bit_num % 32;
-		int i = DATA_COUNT - 1 - q;
+	x = logicalShiftRight(x, shift_bit_num);
 
-		while (i > 0) {
-			x.data[i + q] = (x.data[i] >> r) | (x.data[i - 1] << (32 - r));
-			--i;
-		}
+	if (is_negative) {
+		while (shift_bit_num < 0)
+			shift_bit_num += BIT_SIZE;
 
-		x.data[i + q] = x.data[i] >> r;
+		shift_bit_num %= BIT_SIZE;
 
-		if (is_negative) {
-			for (int j = 0; j < shift_bit_num; ++j) {
-				x.data[j / 32] |= (1 << (31 - j % 32));
-			}
-		}
-		else {
-			i = i + q - 1;
-			while (i >= 0) {
-				x.data[i] = 0;
-				--i;
-			}
+		if (shift_bit_num == 0)
+			return x;
+
+		for (int j = 0; j < shift_bit_num; ++j) {
+			x.data[j / 32] |= (1 << (31 - j % 32));
 		}
 	}
-	else {
-		if (is_negative) {
-			for (int j = 0; j < BIT_SIZE; ++j) {
-				x.data[j / 32] |= (1 << (31 - j % 32));
-			}
-		}
-		else {
-			for (int i = 0; i < DATA_COUNT; ++i)
-				x.data[i] = 0;
-		}
+
+	return x;
+}
+
+/* Logical shift right */
+QInt logicalShiftRight(QInt x, int shift_bit_num) {
+	while (shift_bit_num < 0)
+		shift_bit_num += BIT_SIZE;
+
+	shift_bit_num %= BIT_SIZE;
+
+	if (shift_bit_num == 0)
+		return x;
+
+	int q = shift_bit_num / 32;
+	int r = shift_bit_num % 32;
+	int i = DATA_COUNT - 1 - q;
+
+	while (i > 0) {
+		if (r == 0)
+			x.data[i + q] = x.data[i];
+		else
+			x.data[i + q] = (x.data[i] >> r) | (x.data[i - 1] << (32 - r));
+
+		--i;
+	}
+
+	x.data[i + q] = x.data[i] >> r;
+
+	i = i + q - 1;
+	while (i >= 0) {
+		x.data[i] = 0;
+		--i;
 	}
 
 	return x;
@@ -420,20 +443,18 @@ QInt operator>>(QInt x, size_t shift_bit_num) {
 
 
 /* j. Rotate left */
-QInt rol(QInt x, size_t rotate_bit_num) {
-	rotate_bit_num %= BIT_SIZE;
+QInt rol(QInt x, int rotate_bit_num) {
+	QInt a = logicalShiftLeft(x, rotate_bit_num);
+	QInt b = logicalShiftRight(x, BIT_SIZE - rotate_bit_num);
 
-
-
-	return x;
+	return a | b;
 }
 
 
 /* j. Rotate right */
-QInt ror(QInt x, size_t rotate_bit_num) {
-	rotate_bit_num %= BIT_SIZE;
+QInt ror(QInt x, int rotate_bit_num) {
+	QInt a = logicalShiftRight(x, rotate_bit_num);
+	QInt b = logicalShiftLeft(x, BIT_SIZE - rotate_bit_num);
 
-
-
-	return x;
+	return a | b;
 }
