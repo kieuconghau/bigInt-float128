@@ -1,12 +1,15 @@
 #include "QInt.h"
 
 int main() {
-	QInt x;
+	QInt x, y;
+
 	scanQInt(x);
 	printBin(x);
 
-	x = rol(x, 129);
-	printBin(x);
+	scanQInt(y);
+	printBin(y);
+	
+	printBin(x * y);
 
 	return 0;
 }

@@ -231,12 +231,41 @@ QInt operator-(QInt x, QInt y) {
 }
 
 
+/* g. * */
+QInt operator*(QInt x, QInt y) {
+	QInt Q = x;
+	QInt M = y;
+	QInt A;
+	uint32_t q;
+	uint32_t q_ = 0;
+
+	for (int i = 0; i < BIT_SIZE; ++i) {
+		q = Q.data[DATA_COUNT - 1] & 1;
+
+		if (q == 0 && q_ == 1)
+			A = A + M;
+		else if (q == 1 && q_ == 0)
+			A = A - M;
+		
+		q_ = q;
+
+		Q = logicalShiftRight(Q, 1);
+		Q.data[0] |= A.data[DATA_COUNT - 1] << 31;
+
+		A = A >> 1;
+	}
+
+	return Q;
+}
+
+
 /* h. == */
 bool operator==(QInt x, QInt y) {
 	for (int i = 0; i < DATA_COUNT; ++i) {
 		if (x.data[i] != y.data[i])
 			return false;
 	}
+
 	return true;
 }
 
