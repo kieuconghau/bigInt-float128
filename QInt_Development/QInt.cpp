@@ -22,46 +22,56 @@ void scanQInt(QInt& x) {
 	string str;
 	cin >> str;
 
-	bool is_negative = false;
-	if (str[0] == '-') {
-		is_negative = true;
-		str[0] = '0';
-	}
-
 	bool* bit = new bool[BIT_SIZE]();
 	bool is_not_overflow = decStrToBinStr(str, bit, BIT_SIZE);
 
-	if (is_not_overflow) {
-		/* Negative */
-		if (is_negative) {
-			int i = BIT_SIZE - 1;
-			
-			while (bit[i--] == 0);
-
-			while (i >= 0) {
-				bit[i] = !bit[i];
-				--i;
-			}
-		}
-		
-		/* Turn on bit */
+	if (is_not_overflow)
 		x = binToDec(bit);
-	}
-	else {
+	else
 		cout << "\aError: Overflow" << endl;
-	}
 
 	delete[] bit;
 }
 
 
 /* Convert decimal string to binary sequence */
-bool decStrToBinStr(string str, bool* bit, int bit_size)
-{
+bool decStrToBinStr(string str, bool* bit, int bit_size) {
+	if (stoi(str) == 0) {	// prevent case: str = "-0"
+		for (int i = 0; i < bit_size; ++i)
+			bit[i] = 0;
+
+		return true;
+	}
+
+	bool is_negative = false;
+	if (str[0] == '-') {
+		is_negative = true;
+		str[0] = '0';
+	}
+
 	while (bit_size > 1) {		// Ignore bit[0]: sign bit
 		--bit_size;
 		bit[bit_size] = decStrMod2(str);
 		str = decStrDivide2(str);
+	}
+
+	if (is_negative) {
+		int i = BIT_SIZE - 1;
+
+		while (bit[i] == 0 && i >= 0) {
+			--i;
+		}
+
+		if (i == -1) {		// 000...00 -> 100...00 (4 bits: -8)
+			bit[0] = 1;
+			return stoi(str) == 1;	// Check not overflow with the special case (4 bits: str = "-8")
+		}
+
+		--i;
+		while (i >= 0) {
+			bit[i] = !bit[i];
+			--i;
+		}
 	}
 
 	return stoi(str) == 0;		// Check not overflow
@@ -182,6 +192,9 @@ QInt binToDec(bool* bit) {
 }
 
 
+/* e. Binary to Hexa */
+
+
 /* g. + */
 QInt operator+(QInt x, QInt y) {
 	QInt sum;
@@ -198,8 +211,8 @@ QInt operator+(QInt x, QInt y) {
 		r = (a + b + r) >> 1;
 	}
 
-	if (r == 1) {
-		cout << "\aWarning: overflow" << endl;
+	if ((isPositive(x) && isPositive(y)) || (isNegative(x) && isNegative(y))) {
+		//cout << "\aWarning: overflow" << endl;
 	}
 
 	return sum;
@@ -223,8 +236,8 @@ QInt operator-(QInt x, QInt y) {
 		d = (a >> 1) - ((a - b - d) >> 1);
 	}
 
-	if (d == 1) {
-		cout << "\aWarning: overflow" << endl;
+	if ((isPositive(x) && isNegative(y)) || ((isNegative(x) && isPositive(y)))) {
+		//cout << "\aWarning: overflow" << endl;
 	}
 
 	return dif;
@@ -254,6 +267,52 @@ QInt operator*(QInt x, QInt y) {
 
 		A = A >> 1;
 	}
+
+	return Q;
+}
+
+
+/* g. / */
+QInt operator/(QInt x, QInt y) {
+	if (isZero(x))		// return 0 if x == 0
+		return x;
+	if (isZero(y))		// warn if y == 0
+		throw "Divisor cannot be zero!";
+
+	bool is_negative = isNegative(x) ^ isNegative(y);		// sign of the result
+
+	QInt one;			// 1
+	one.data[DATA_COUNT - 1] = 1;
+	
+	if (isNegative(x))
+		x = ~(x - one);		// covert the negative to the positive
+	if (isNegative(y))
+		y = ~(y - one);		// covert the negative to the positive
+
+	
+	QInt Q = x;		// Before: Dividend - After: Quotinent 
+	QInt M = y;		// Divisor
+	QInt A;			// Remainder
+
+	for (int i = 0; i < BIT_SIZE; ++i) {
+		// logicalShiftLeft A, Q
+		A = A << 1;
+		A.data[DATA_COUNT - 1] |= Q.data[0] >> (UINT_BIT_SIZE - 1);
+		Q = Q << 1;
+
+		A = A - M;
+
+		if (isNegative(A)) {
+			Q.data[DATA_COUNT - 1] &= ~1;		// ~1: 111..110
+			A = A + M;
+		}
+		else {
+			Q.data[DATA_COUNT - 1] |= 1;
+		}
+	}
+
+	if (is_negative)
+		Q = ~(Q - one);		// convert the positive (result) to the negative
 
 	return Q;
 }

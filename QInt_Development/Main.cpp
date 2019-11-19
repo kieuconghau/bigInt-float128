@@ -1,4 +1,6 @@
 #include "QInt.h"
+#include <bitset>
+using namespace std;
 
 int main() {
 	QInt x, y;
@@ -9,7 +11,8 @@ int main() {
 	scanQInt(y);
 	printBin(y);
 	
-	printBin(x * y);
+	cout << endl;
+	printBin(x + y);
 
 	return 0;
 }
