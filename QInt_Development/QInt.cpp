@@ -211,8 +211,9 @@ QInt operator+(QInt x, QInt y) {
 		r = (a + b + r) >> 1;
 	}
 
-	if ((isPositive(x) && isPositive(y)) || (isNegative(x) && isNegative(y))) {
-		//cout << "\aWarning: overflow" << endl;
+	if ((isPositive(x) && isPositive(y) && isNegative(sum)) ||
+		(isNegative(x) && isNegative(y) && isPositive(sum))) {
+		cout << "\aWarning: overflow" << endl;
 	}
 
 	return sum;
@@ -236,8 +237,9 @@ QInt operator-(QInt x, QInt y) {
 		d = (a >> 1) - ((a - b - d) >> 1);
 	}
 
-	if ((isPositive(x) && isNegative(y)) || ((isNegative(x) && isPositive(y)))) {
-		//cout << "\aWarning: overflow" << endl;
+	if ((isPositive(x) && isNegative(y) && isNegative(dif)) ||
+		(isNegative(x) && isPositive(y) && isPositive(dif))) {
+		cout << "\aWarning: overflow" << endl;
 	}
 
 	return dif;
