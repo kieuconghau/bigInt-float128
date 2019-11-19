@@ -172,4 +172,5 @@ bool *decToBin(Qfloat x) {
 		int idx = (int)(i / 32);
 		bit[i] = (x.data[idx] >> (31 - (i % 32))) & 1;
 	}
+	return bit;
 }
