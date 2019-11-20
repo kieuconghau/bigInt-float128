@@ -6,10 +6,10 @@
 
 #include "Qfloat.h"
 
-int multiply2(int *a, int n) {
+int multiply2(vector <int> &a) {
 	int r = 0;
 
-	for (int i = n - 1; i >= 0; i--) {
+	for (int i = a.size() - 1; i >= 0; i--) {
 		a[i] *= 2;
 		a[i] += r;
 		r = a[i] / pow(10, DIGITS);
@@ -19,11 +19,11 @@ int multiply2(int *a, int n) {
 	return r;
 }
 
-int mod2(int *a, int n) {
-	int result = a[n - 1] % 2;
-	a[n - 1] /= 2;
+int mod2(vector <int> &a) {
+	int result = a[a.size() - 1] % 2;
+	a[a.size() - 1] /= 2;
 
-	for (int i = n - 2; i >= 0; i--) {
+	for (int i = a.size() - 2; i >= 0; i--) {
 		int r = a[i] % 2;
 		a[i] = a[i] / 2;
 		a[i + 1] += r * pow(10, DIGITS) / 2;
@@ -32,39 +32,39 @@ int mod2(int *a, int n) {
 	return result;
 }
 
-bool isZero(int *a, int n) {
-	for (int i = n - 1; i >= 0; i--) {
+bool isZero(vector <int> a) {
+	for (int i = a.size() - 1; i >= 0; i--) {
 		if (a[i] != 0) return false;
 	}
 	return true;
 }
 
-void processIntergralPart(string intergral, int nInt, int *_int, vector <bool> &binInt) {
+void processIntergralPart(string intergral, vector <int> &_int, vector <bool> &binInt) {
 	string d;
 
-	for (int i = nInt - 1; i >= 1; i--) { // backward
-		d = intergral.substr(intergral.size() - (nInt - i) * DIGITS, DIGITS); // split 8 digits
+	for (int i = _int.size() - 1; i >= 1; i--) { // backward
+		d = intergral.substr(intergral.size() - (_int.size() - i) * DIGITS, DIGITS); // split 8 digits
 		_int[i] = stoi(d);
 	}
-	d = intergral.substr(0, intergral.size() - (nInt - 1) * DIGITS);
+	d = intergral.substr(0, intergral.size() - (_int.size() - 1) * DIGITS);
 	_int[0] = stoi(d);
 
-	while (!isZero(_int, nInt)) {
-		binInt.insert(binInt.begin(), mod2(_int, nInt));
+	while (!isZero(_int)) {
+		binInt.insert(binInt.begin(), mod2(_int));
 	}
 }
 
-bool processFractionalPart(string fractional, int nFrac, int *_frac, vector <bool> &binFrac, vector <bool> binInt) {
+bool processFractionalPart(string fractional, vector <int> &_frac, vector <bool> &binFrac, vector <bool> binInt) {
 	string d;
 
-	if (nFrac > 1) {
-		for (int i = 0; i < nFrac - 1; i++) {
+	if (_frac.size() > 1) {
+		for (int i = 0; i < _frac.size() - 1; i++) {
 			d = fractional.substr(i*DIGITS, DIGITS);
 			_frac[i] = stoi(d);
 		}
-		d = fractional.substr((nFrac - 1)*DIGITS, fractional.size() - (nFrac - 1)*DIGITS);
+		d = fractional.substr((_frac.size() - 1)*DIGITS, fractional.size() - (_frac.size() - 1)*DIGITS);
 		while (d.size() < 8) d += '0'; // fill in d to get 8 digits
-		_frac[nFrac - 1] = stoi(d);
+		_frac[_frac.size() - 1] = stoi(d);
 	}
 	else {
 		while (fractional.size() < 8) fractional += '0';
@@ -72,8 +72,8 @@ bool processFractionalPart(string fractional, int nFrac, int *_frac, vector <boo
 	}
 
 	int limit = pow(2, EXPONENT - 1) - 2 + SIGNIFICAND;
-	while (((limit - (binInt.size() - 1) - binFrac.size()) > 0) && !isZero(_frac, nFrac)) {
-		binFrac.insert(binFrac.end(),multiply2(_frac, nFrac));
+	while (((limit - (binInt.size() - 1) - binFrac.size()) > 0) && !isZero(_frac)) {
+		binFrac.insert(binFrac.end(),multiply2(_frac));
 	}
 
 	return (binFrac.size() == 0);
@@ -104,15 +104,15 @@ void scanQfloat(Qfloat &x) {
 
 	// ==== PROCESS INTERGRAL PART ====
 	int nInt = (int)((intergral.size() % DIGITS == 0) ? (intergral.size() / DIGITS) : (intergral.size() / DIGITS) + 1); // calc range
-	int *_int = new int[nInt]; // discrete intergral part
+	vector <int> _int(nInt);
 	vector <bool> binInt;
-	processIntergralPart(intergral, nInt, _int, binInt);
+	processIntergralPart(intergral,  _int, binInt);
 	
 	// ==== PROCESS FRACTIONAL PART ====
 	int nFrac = (int)((fractional.size() % DIGITS == 0) ? (fractional.size() / DIGITS) : (fractional.size() / DIGITS) + 1); // calc range
-	int *_frac = new int[nFrac]; // discrete intergral part
+	vector <int> _frac(nFrac);
 	vector <bool> binFrac;
-	processFractionalPart(fractional, nFrac, _frac, binFrac, binInt);
+	processFractionalPart(fractional, _frac, binFrac, binInt);
 
 	// ==== PROCESS EXPONENT ====
 	int floating = 0;
@@ -129,8 +129,11 @@ void scanQfloat(Qfloat &x) {
 	else floating = binInt.size() - 1; // dot move to left
 	exponent = (floating > (-pow(2, EXPONENT - 1) + 2))? floating + (pow(2, EXPONENT - 1) - 1) : 0;
 
-	for (int i = 15; i >= 1 && exponent != 0; i--) {
-		if (mod2(&exponent, 1)) {
+	vector <int> ex;
+	ex.push_back(exponent);
+
+	for (int i = 15; i >= 1 && !isZero(ex); i--) {
+		if (mod2(ex)) {
 			x.data[0] = x.data[0] | (1 << (31-i));
 		}
 	}
@@ -147,21 +150,17 @@ void scanQfloat(Qfloat &x) {
 	if (intergral == "0") {
 		start = (floating > (-pow(2, EXPONENT - 1) + 2)) ? (-floating) : (-pow(2, EXPONENT - 1) + 2 - 1);
 	}
-	for (int i = start; (bit <= BITS) && (i < binFrac.size()) ; i++) {
+	for (int i = start; (bit <= BITS) && (i < binFrac.size()); i++) {
 		int idx = (int)(bit / 32); // index of x.data[]
 		x.data[idx] = x.data[idx] | (binFrac[i] << (31 - (bit - 32 * idx)));
 		bit++;
 	}
-
-	// ==== DELOCATE ====
-	delete _int;
-	delete _frac;
 }
 
 void printBinaryQfloat(Qfloat x) {
 	for (int i = 0; i < 128; i++) {
 		int idx = (int)(i / 32);
-		int bit = (x.data[idx] >> (31 -(i % 32))) & 1;
+		int bit = (x.data[idx] >> (31 - (i % 32))) & 1;
 		cout << bit;
 		if (i % 4 == 3) cout << "\t";
 		if (i % 16 == 15) cout << "\n";
@@ -179,11 +178,174 @@ Qfloat binToDec(bool *bit) {
 }
 
 bool *decToBin(Qfloat x) {
-	bool *bit = new bool [BITS];
+	bool *bit = new bool[BITS];
 
 	for (int i = 0; i < BITS; i++) {
 		int idx = (int)(i / 32);
 		bit[i] = (x.data[idx] >> (31 - (i % 32))) & 1;
 	}
 	return bit;
+}
+
+
+
+
+
+
+void discreteDivideBy2(discrete &x) {
+
+	// Fractional
+	int r = mod2(x._frc);
+	if (r == 1) x._frc.push_back(r * pow(10, DIGITS) / 2);
+
+	// Integral
+	r = mod2(x._int);
+	x._frc[0] += r * pow(10, DIGITS) / 2;
+}
+
+void discreteMultiplyBy2(discrete &x) {
+
+	// Fractional
+	int R = multiply2(x._frc);
+	
+	// Integral
+	int r = multiply2(x._int);
+	if (r == 1) x._int.insert(x._int.begin(), 1);
+	x._int[x._int.size() - 1] += R;
+
+}
+
+discrete discreteSum(discrete x, discrete y) {
+	discrete sum;
+	int r = 0;
+
+	// Fractional
+	int dif = x._frc.size() - y._frc.size();
+	for (int i = 0; i < abs(dif); i++) {
+		sum._frc.insert(sum._frc.begin(), (dif > 0) ? x._frc[x._frc.size() - i - 1] : y._frc[y._frc.size() - i - 1]);
+	}
+
+	int size = (dif > 0) ? y._frc.size() : x._frc.size();
+	int s = x._frc[size - 1] + y._frc[size - 1];
+	sum._frc.insert(sum._frc.begin(), s);
+	r = s / pow(10, DIGITS);
+	for (int i = size - 2; i >= 0; i--) {
+		int s = x._frc[i] + y._frc[i];
+		s += r;
+		sum._frc.insert(sum._frc.begin(), s);
+		r = s / pow(10, DIGITS);
+	}
+
+	// Integral
+	int xSize = x._int.size();
+	int ySize = y._int.size();
+
+	while (xSize > 0 && ySize > 0) {
+		s = x._int[--xSize] + y._int[--ySize];
+		s += r;
+		sum._int.insert(sum._int.begin(), s);
+		r = s / pow(10, DIGITS);
+	}
+
+	if (xSize > 0) {
+		sum._int.insert(sum._int.begin(), x._int[--xSize] + r);
+
+		while (xSize > 0) {
+			sum._int.insert(sum._int.begin(), x._int[--xSize]);
+		}
+	}
+	if (ySize > 0) {
+		sum._int.insert(sum._int.begin(), y._int[--ySize] + r);
+
+		while (ySize > 0) {
+			sum._int.insert(sum._int.begin(), y._int[--ySize]);
+		}
+	}
+
+	return sum;
+}
+
+void printQfloat(Qfloat x) {
+	int bit;
+	discrete _x;
+
+	// calc EXPONENT
+	int exponent = 0;
+	for (int i = 15; i >= 0; i--) {
+		bit = (x.data[0] >> (31 - i)) & 1;
+		exponent += bit * pow(2, 15 - i);
+	}
+	exponent -= (pow(2, EXPONENT - 1) - 1);
+
+	// initial
+	if (exponent == -(pow(2, EXPONENT - 1) - 1)) {
+		_x._int.push_back(0);
+		exponent++;
+	}
+	else {
+		_x._int.push_back(1);
+	}
+	_x._frc.push_back(0);
+	discrete temp;
+	temp._int.push_back(1);
+	temp._frc.push_back(0);
+	
+	// find idx of the first bit 1
+	int i = 16;
+	bit = 0;
+	while (!bit) {
+		int idx = (int)(i / 32);
+		bit = (x.data[idx] >> (31 - (i % 32))) & 1;
+		discreteDivideBy2(temp);
+		i++;
+	}
+	_x = discreteSum(_x, temp);
+
+	// calc SIGNIFICAND
+	while (i < BITS) {
+		int idx = (int)(i / 32);
+		bit = (x.data[idx] >> (31 - (i % 32))) & 1;
+		discreteDivideBy2(temp);
+		if (bit == 1) {
+			_x = discreteSum(_x, temp);
+		}
+			
+		i++;
+	}
+
+	// processing
+	for (int i = 0; i < abs(exponent); i++) {
+		if (exponent >= 0) {
+			discreteMultiplyBy2(_x);
+		}
+		else {
+			discreteDivideBy2(_x);
+		}
+	}
+
+	// convert to string
+	string str = "";
+	bit = (x.data[0] >> 31) & 1;
+	if (bit == 1) str += "-";
+	for (int i = 0; i < _x._int.size(); i++) {
+		str += to_string(_x._int[i]);
+	}
+	str += ".";
+
+	for (int i = 0; i < _x._frc.size(); i++) {
+		str += to_string(_x._frc[i]);
+	}
+
+	cout << str << endl;
+}
+
+void print(discrete x) {
+	for (int i = 0; i < x._int.size(); i++) {
+		cout << x._int[i] << " ";
+	}
+
+	cout << " , ";
+	for (int i = 0; i < x._frc.size(); i++) {
+		cout << x._frc[i] << " ";
+	}
 }

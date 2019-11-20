@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 #define DIGITS 8
 #define BITS 128
 #define SIGNIFICAND 112
@@ -19,14 +20,27 @@ struct Qfloat {
 	int data[4] = {};
 };
 
-int multiply2(int *a, int n);
-int mod2(int *a, int n);
-bool isZero(int *a, int n);
-void processIntergralPart(string intergral, int nInt, int *_int, vector <bool> &binInt);
-bool processFractionalPart(string fractional, int nFrac, int *_frac, vector <bool> &binFrac, vector <bool> binInt);
-int checkUnderflow(vector <bool> binFrac);
+struct discrete {
+	vector <int> _int;
+	vector <int> _frc;
+};
 
+int multiply2(vector <int> &a);
+int mod2(vector <int> &a);
+bool isZero(vector <int> a);
+void processIntergralPart(string intergral, vector <int> &_int, vector <bool> &binInt);
+bool processFractionalPart(string fractional, vector <int> &_frac, vector <bool> &binFrac, vector <bool> binInt);
+int checkUnderflow(vector <bool> binFrac);
 void scanQfloat(Qfloat &x);
 void printBinaryQfloat(Qfloat x);
 
 Qfloat binToDec(bool *bit);
+bool *decToBin(Qfloat x);
+
+
+void discreteMultiplyBy2(discrete &x);
+void discreteDivideBy2(discrete &x);
+discrete discreteSum(discrete x, discrete y);
+void printQfloat(Qfloat x);
+
+void print(discrete x);
