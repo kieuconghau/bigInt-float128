@@ -51,8 +51,8 @@ bool decStrToBinStr(string str, bool* bit, int bit_size) {
 
 	while (bit_size > 1) {		// Ignore bit[0]: sign bit
 		--bit_size;
-		bit[bit_size] = decStrMod2(str);
-		str = decStrDivide2(str);
+		bit[bit_size] = posDecStrMod2(str);
+		str = posDecStrDivide2(str);
 	}
 
 	if (is_negative) {
@@ -79,44 +79,24 @@ bool decStrToBinStr(string str, bool* bit, int bit_size) {
 
 
 /* Decimal string divide 2 */
-string decStrDivide2(string str) {	// Divisor = 2
-	string quotient;
+string posDecStrDivide2(string str) {	// Divisor = 2
+	string quo;
 
-	/* Split str into many parts and store each part of them into 1 size_t */
-	// 1. Count the number of parts
-	int const part_count = (str.size() + PART_SIZE - 1) / PART_SIZE;
+	uint8_t re = 0;		// remainder
+	uint8_t temp;
 
-	// 2. Store each part which is split into 1 size_t
-	size_t* part = new size_t[part_count];
-
-	for (int i = 1; i < part_count; ++i) {
-		part[part_count - i] = stoi(str.substr(str.size() - PART_SIZE * i, PART_SIZE));
+	for (int i = 0; i < str.size(); ++i) {
+		temp = 10 * re + (str[i] - '0');
+		quo += temp / 2 + '0';
+		re = temp % 2;
 	}
-	part[0] = stoi(str.substr(0, str.size() - PART_SIZE * (part_count - 1)));
-
-
-	/* Process */
-	for (int i = 0; i < part_count - 1; ++i) {
-		if (part[i] < 2 * (int)pow(10, PART_SIZE - 1))
-			quotient += "0";
-
-		quotient += to_string(part[i] / 2);
-		part[i + 1] += (part[i] % 2) * (int)pow(10, PART_SIZE);
-	}
-	if (part[part_count - 1] < 2 * (int)pow(10, PART_SIZE - 1))
-		quotient += "0";
-	quotient += to_string(part[part_count - 1] / 2);
-
-
-	/* Deallocate memory */
-	delete[] part;
-
-	return quotient;
+	
+	return quo;
 }
 
 
 /* Decimal string mod 2 */
-bool decStrMod2(string str) {		// Divisor = 2
+bool posDecStrMod2(string str) {		// Divisor = 2
 	return (str[str.size() - 1] - '0') % 2 != 0;
 }
 
