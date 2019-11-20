@@ -71,12 +71,18 @@ bool processFractionalPart(string fractional, int nFrac, int *_frac, vector <boo
 		_frac[0] = stoi(fractional);
 	}
 
-	
-	while (((BITS - (binInt.size() - 1) - binFrac.size()) > 0) && !isZero(_frac, nFrac)) {
+	int limit = pow(2, EXPONENT - 1) - 2 + SIGNIFICAND;
+	while (((limit - (binInt.size() - 1) - binFrac.size()) > 0) && !isZero(_frac, nFrac)) {
 		binFrac.insert(binFrac.end(),multiply2(_frac, nFrac));
 	}
 
 	return (binFrac.size() == 0);
+}
+
+int checkUnderflow(vector <bool> binFrac) {
+	int floating = 0;
+	for (int i = 0; !binFrac[i]; i++) floating--;
+	return (binFrac.size() + floating == 0) ? 0 : floating;
 }
 
 void scanQfloat(Qfloat &x) {
@@ -112,11 +118,16 @@ void scanQfloat(Qfloat &x) {
 	int floating = 0;
 	int exponent = 0;
 	if (intergral == "0") { // check if 0.xxxx
-		for (int i = 0; !binFrac[i]; i++) floating--;  // dot move to right
-		floating--;
+		if (checkUnderflow(binFrac)) {
+			floating -= (floating < (-pow(2, EXPONENT - 1) + 2)) ? 1 : 0;
+		}
+		else {
+			cout << "Error: Underflow" << endl;
+			return;
+		}
 	}
 	else floating = binInt.size() - 1; // dot move to left
-	exponent = floating + (pow(2, 15 - 1) - 1);
+	exponent = (floating > (-pow(2, EXPONENT - 1) + 2))? floating + (pow(2, EXPONENT - 1) - 1) : 0;
 
 	for (int i = 15; i >= 1 && exponent != 0; i--) {
 		if (mod2(&exponent, 1)) {
@@ -133,7 +144,9 @@ void scanQfloat(Qfloat &x) {
 	}
 
 	int start = 0;
-	if (intergral == "0") start = - floating;
+	if (intergral == "0") {
+		start = (floating > (-pow(2, EXPONENT - 1) + 2)) ? (-floating) : (-pow(2, EXPONENT - 1) + 2 - 1);
+	}
 	for (int i = start; (bit <= BITS) && (i < binFrac.size()) ; i++) {
 		int idx = (int)(bit / 32); // index of x.data[]
 		x.data[idx] = x.data[idx] | (binFrac[i] << (31 - (bit - 32 * idx)));

@@ -10,6 +10,8 @@
 #include <vector>
 #define DIGITS 8
 #define BITS 128
+#define SIGNIFICAND 112
+#define EXPONENT 15
 
 using namespace std;
 
@@ -22,6 +24,7 @@ int mod2(int *a, int n);
 bool isZero(int *a, int n);
 void processIntergralPart(string intergral, int nInt, int *_int, vector <bool> &binInt);
 bool processFractionalPart(string fractional, int nFrac, int *_frac, vector <bool> &binFrac, vector <bool> binInt);
+int checkUnderflow(vector <bool> binFrac);
 
 void scanQfloat(Qfloat &x);
 void printBinaryQfloat(Qfloat x);
