@@ -38,9 +38,9 @@ bool posDecStrMod2(string str);
 
 void printQInt(QInt x);
 
-string decStrMultiply2(string str);
+string posDecStrMultiply2(string str);
 
-string decStrAddDecStr(string str1, string str2);
+string posDecStrAddDecStr(string str1, string str2);
 
 
 bool* decToBin(QInt x);
@@ -48,6 +48,11 @@ bool* decToBin(QInt x);
 void printBin(QInt x);
 
 QInt binToDec(bool* bit);
+
+
+string binToHex(bool* bit);
+
+string decToHex(QInt x);
 
 
 QInt operator+(QInt x, QInt y);

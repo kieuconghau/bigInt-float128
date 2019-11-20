@@ -1,13 +1,18 @@
 #include "QInt.h"
 
+/* Check if QInt is negative */
 bool isNegative(QInt x) {
 	return (x.data[0] >> 31) == 1;
 }
 
+
+/* Check if QInt is positive */
 bool isPositive(QInt x) {
 	return !isNegative(x) && !isZero(x);
 }
 
+
+/* Check if QInt is zero */
 bool isZero(QInt x) {
 	for (int i = 0; i < DATA_COUNT; ++i) {
 		if (x.data[i] != 0)
@@ -78,7 +83,7 @@ bool decStrToBinStr(string str, bool* bit, int bit_size) {
 }
 
 
-/* Decimal string divide 2 */
+/* Positive decimal string divide 2 */
 string posDecStrDivide2(string str) {	// Divisor = 2
 	string quo;
 
@@ -95,7 +100,7 @@ string posDecStrDivide2(string str) {	// Divisor = 2
 }
 
 
-/* Decimal string mod 2 */
+/* Positive decimal string mod 2 */
 bool posDecStrMod2(string str) {		// Divisor = 2
 	return (str[str.size() - 1] - '0') % 2 != 0;
 }
@@ -107,18 +112,18 @@ void printQInt(QInt x) {
 }
 
 
-/* Decimal string multiple 2 */
-string decStrMultiply2(string str) {	// Factor = 2
-	string product(str.size() + 1, 0);
+/* Positive decimal string multiply 2 */
+string posDecStrMultiply2(string str) {	// Factor = 2
+	string prod(str.size() + 1, 0);
 
 
 
-	return product;
+	return prod;
 }
 
 
-/* Decimal string add decimal string */
-string decStrAddDecStr(string str1, string str2) {
+/* Positive decimal string add decimal string */
+string posDecStrAddDecStr(string str1, string str2) {
 	string sum;
 
 
@@ -172,7 +177,29 @@ QInt binToDec(bool* bit) {
 }
 
 
-/* e. Binary to Hexa */
+/* e. Binary to Hexadecimal */
+string binToHex(bool* bit) {
+	string hex = "0x";
+
+	for (int i = 0; i < BIT_SIZE; i += 4) {
+		int dec = bit[i + 3] + bit[i + 2] * 2 + bit[i + 1] * 4 + bit[i] * 8;
+
+		char ascii = (dec < 10) ? dec + 48 : dec - 10 + 65;
+		string _ascii(&ascii);
+
+		hex += _ascii[0];
+	}
+
+	return hex;
+}
+
+
+/* e. Hexdecimal to Binary */
+string decToHex(QInt x) {
+	bool* bit = decToBin(x);
+
+	return binToHex(bit);
+}
 
 
 /* g. + */
@@ -528,3 +555,4 @@ QInt ror(QInt x, int rotate_bit_num) {
 
 	return a | b;
 }
+
