@@ -26,6 +26,10 @@ bool isPositive(QInt x);
 
 bool isZero(QInt x);
 
+bool isOne(string str);
+
+bool isZero(string str);
+
 
 void scanQInt(QInt& x);
 

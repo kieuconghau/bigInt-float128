@@ -21,6 +21,29 @@ bool isZero(QInt x) {
 	return true;
 }
 
+bool isOne(string str) {
+	if (str[0] == '-')
+		return false;
+
+	for (int i = 0; i < str.size() - 1; ++i) {
+		if (str[i] != '0')
+			return false;
+	}
+
+	return str[str.size() - 1] == '1';
+}
+
+bool isZero(string str) {
+	if (str[0] == '-')
+		str[0] = '0';
+
+	for (int i = 0; i < str.size(); ++i) {
+		if (str[i] != '0')
+			return false;
+	}
+
+	return true;
+}
 
 /* a. Scan QInt */
 void scanQInt(QInt& x) {
@@ -41,7 +64,7 @@ void scanQInt(QInt& x) {
 
 /* Convert decimal string to binary sequence */
 bool decStrToBinStr(string str, bool* bit, int bit_size) {
-	if (stoi(str) == 0) {	// prevent case: str = "-0"
+	if (isZero(str)) {	// prevent case: str = "-0"
 		for (int i = 0; i < bit_size; ++i)
 			bit[i] = 0;
 
@@ -69,7 +92,7 @@ bool decStrToBinStr(string str, bool* bit, int bit_size) {
 
 		if (i == -1) {		// 000...00 -> 100...00 (4 bits: -8)
 			bit[0] = 1;
-			return stoi(str) == 1;	// Check not overflow with the special case (4 bits: str = "-8")
+			return isOne(str);	// Check not overflow with the special case (4 bits: str = "-8")
 		}
 
 		--i;
@@ -79,7 +102,7 @@ bool decStrToBinStr(string str, bool* bit, int bit_size) {
 		}
 	}
 
-	return stoi(str) == 0;		// Check not overflow
+	return isZero(str);		// Check not overflow
 }
 
 
