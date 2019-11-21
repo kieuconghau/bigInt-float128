@@ -63,11 +63,11 @@ bool processFractionalPart(string fractional, vector <int> &_frac, vector <bool>
 			_frac[i] = stoi(d);
 		}
 		d = fractional.substr((_frac.size() - 1)*DIGITS, fractional.size() - (_frac.size() - 1)*DIGITS);
-		while (d.size() < 8) d += '0'; // fill in d to get 8 digits
+		while (d.size() < DIGITS) d += '0'; // fill in d to get 8 digits
 		_frac[_frac.size() - 1] = stoi(d);
 	}
 	else {
-		while (fractional.size() < 8) fractional += '0';
+		while (fractional.size() < DIGITS) fractional += '0';
 		_frac[0] = stoi(fractional);
 	}
 
@@ -84,12 +84,12 @@ int checkUnderflow(vector <bool> binFrac) {
 	for (int i = 0; !binFrac[i]; i++) 
 		floating--;
 	floating--;
-	return (binFrac.size() + floating == 0) ? 0 : floating;
+	return (floating < -(pow(2, EXPONENT - 1) - 2 + SIGNIFICAND))? 0: floating;
 }
 
 void scanQfloat(Qfloat &x) {
 	string str;
-	cout << "x = "; cin >> str;
+	cout << "x = "; cin >> str; getchar();
 
 	// ==== PROCESS SIGN ====
 	bool sign = (str[0] == '-'); //
@@ -216,6 +216,7 @@ void discreteMultiplyBy2(discrete &x) {
 }
 
 discrete discreteSum(discrete x, discrete y) {
+	//print(y); cout << endl;
 	discrete sum;
 	int r = 0;
 
@@ -227,13 +228,16 @@ discrete discreteSum(discrete x, discrete y) {
 
 	int size = (dif > 0) ? y._frc.size() : x._frc.size();
 	int s = x._frc[size - 1] + y._frc[size - 1];
-	sum._frc.insert(sum._frc.begin(), s);
 	r = s / pow(10, DIGITS);
+	s -= r * pow(10, DIGITS);
+	sum._frc.insert(sum._frc.begin(), s);
+	
 	for (int i = size - 2; i >= 0; i--) {
 		int s = x._frc[i] + y._frc[i];
 		s += r;
-		sum._frc.insert(sum._frc.begin(), s);
 		r = s / pow(10, DIGITS);
+		s -= r * pow(10, DIGITS);
+		sum._frc.insert(sum._frc.begin(), s);
 	}
 
 	// Integral
@@ -243,8 +247,9 @@ discrete discreteSum(discrete x, discrete y) {
 	while (xSize > 0 && ySize > 0) {
 		s = x._int[--xSize] + y._int[--ySize];
 		s += r;
-		sum._int.insert(sum._int.begin(), s);
 		r = s / pow(10, DIGITS);
+		s -= r * pow(10, DIGITS);
+		sum._int.insert(sum._int.begin(), s);
 	}
 
 	if (xSize > 0) {
@@ -296,30 +301,47 @@ void printQfloat(Qfloat x) {
 	while (!bit) {
 		int idx = (int)(i / 32);
 		bit = (x.data[idx] >> (31 - (i % 32))) & 1;
-		discreteDivideBy2(temp);
 		i++;
 	}
-	_x = discreteSum(_x, temp);
+
+	if (i <= BITS) {
+		for (int j = 0; j < i - 16; j++) {
+			discreteDivideBy2(temp);
+			/*cout << "divide" << endl;
+			print(temp); getchar();*/
+		}
+		_x = discreteSum(_x, temp);
+	}
+	
+	/*cout << "x" << endl;
+	print(_x); getchar();*/
 
 	// calc SIGNIFICAND
 	while (i < BITS) {
 		int idx = (int)(i / 32);
 		bit = (x.data[idx] >> (31 - (i % 32))) & 1;
 		discreteDivideBy2(temp);
+		//print(temp); cout << endl;
 		if (bit == 1) {
+			//cout << "bit =" << i << endl;
 			_x = discreteSum(_x, temp);
+			/*cout << "sum" << endl;
+			print(_x); getchar();*/
 		}
 
 		i++;
 	}
 
 	// processing
+	cout << exponent << endl;
 	for (int i = 0; i < abs(exponent); i++) {
 		if (exponent >= 0) {
 			discreteMultiplyBy2(_x);
+			//print(_x); getchar();
 		}
 		else {
 			discreteDivideBy2(_x);
+			//print(_x); getchar();
 		}
 	}
 
@@ -331,7 +353,7 @@ void printQfloat(Qfloat x) {
 	for (int i = 0; i < _x._int.size(); i++) {
 		_temp = to_string(_x._int[i]);
 		if (i != 0)
-			while (_temp.size() <8) _temp.insert(_temp.begin(), '0');
+			while (_temp.size() < DIGITS) _temp.insert(_temp.begin(), '0');
 		str += _temp;
 	}
 	str += ".";
@@ -342,7 +364,7 @@ void printQfloat(Qfloat x) {
 	for (int i = 0; i < _x._frc.size(); i++) {
 		_temp = to_string(_x._frc[i]);
 		if(i != _x._frc.size() - 1)
-			while (_temp.size() < 8) _temp.insert(_temp.begin(), '0');
+			while (_temp.size() < DIGITS) _temp.insert(_temp.begin(), '0');
 		str += _temp;
 	}
 
