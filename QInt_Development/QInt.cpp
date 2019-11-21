@@ -131,15 +131,48 @@ bool posDecStrMod2(string str) {		// Divisor = 2
 
 /* b. Print QInt */
 void printQInt(QInt x) {
+	string str_data[4];	// 4 int's in QInt struct expressed in string form.
+	string output;	// Output string
 
+	// Convert 'data' in QInt to string form
+	for (int i = 0; i < 4; i++) {
+		str_data[i] = to_string(x.data[i]);
+	}
+
+	// Multiply str_data[2] by 2^32, str_data[1] by 2^64,
+	// and str_data[0] by 2^96
+	for (int i = 1; i < 4; i++) {
+		if (x.data[3 - i] > 0) {
+			for (int j = 0; j < 32 * i; j++) {
+				str_data[3 - i] = posDecStrMultiply2(str_data[3 - i]);
+			}
+		}
+	}
+
+	for (int i = 1; i < 4; i++) {
+		str_data[0] = posDecStrAddDecStr(str_data[0], str_data[i]);
+	}
+
+	cout << str_data[0] << endl;
 }
 
 
 /* Positive decimal string multiply 2 */
 string posDecStrMultiply2(string str) {	// Factor = 2
-	string prod(str.size() + 1, 0);
+	string prod;
 
+	uint8_t carry = 0;	// The number which will be "carried" to the preceding digit
+	uint8_t temp;
 
+	for (int i = str.size() - 1; i >= 0; i--) {
+		temp = 2 * (str[i] - '0') + carry;
+		prod.insert(0, 1, (temp % 10) + '0');
+		carry = temp / 10;
+	}
+
+	if (carry) {
+		prod.insert(0, 1, '1');
+	}
 
 	return prod;
 }
@@ -149,7 +182,30 @@ string posDecStrMultiply2(string str) {	// Factor = 2
 string posDecStrAddDecStr(string str1, string str2) {
 	string sum;
 
+	uint8_t carry = 0, temp;
+	int i1 = str1.size() - 1, i2 = str2.size() - 1;
 
+	while (i1 >= 0 && i2 >= 0) {
+		temp = (str1[i1--] - '0') + (str2[i2--] - '0') + carry;
+		sum.insert(0, 1, (temp % 10) + '0');
+		carry = temp / 10;
+	}
+
+	while (i1 >= 0) {
+		temp = (str1[i1--] - '0') + carry;
+		sum.insert(0, 1, (temp % 10) + '0');
+		carry = temp / 10;
+	}
+
+	while (i2 >= 0) {
+		temp = (str2[i2--] - '0') + carry;
+		sum.insert(0, 1, (temp % 10) + '0');
+		carry = temp / 10;
+	}
+
+	if (carry) {
+		sum.insert(0, 1, '1');
+	}
 
 	return sum;
 }

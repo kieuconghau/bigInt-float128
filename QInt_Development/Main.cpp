@@ -7,9 +7,11 @@ int main() {
 
 	scanQInt(x);
 	printBin(x);
+	printQInt(x);
 
 	scanQInt(y);
 	printBin(y);
+	printQInt(y);
 	
 	cout << endl;
 	printBin(x + y);
