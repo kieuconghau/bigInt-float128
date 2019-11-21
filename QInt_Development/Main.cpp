@@ -14,7 +14,8 @@ int main() {
 	printQInt(y);
 	
 	cout << endl;
-	printBin(x + y);
+	printBin(x / y);
+	printQInt(x / y);
 
 	return 0;
 }

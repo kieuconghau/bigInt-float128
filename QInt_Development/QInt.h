@@ -6,10 +6,10 @@
 using namespace std;
 
 
-#define BYTE_SIZE 16									// BigInt 16 bytes
-#define BIT_SIZE BYTE_SIZE * 8							// 128
+#define BYTE_COUNT 16									// BigInt 16 bytes
+#define BIT_COUNT BYTE_COUNT * 8							// 128
 
-#define DATA_COUNT BYTE_SIZE / sizeof(uint32_t)			// 4
+#define DATA_COUNT BYTE_COUNT / sizeof(uint32_t)			// 4
 #define UINT_BIT_SIZE sizeof(uint32_t) * 8				// 32
 
 
