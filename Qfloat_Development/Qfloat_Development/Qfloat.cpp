@@ -13,7 +13,7 @@ int multiply2(vector <int> &a) {
 		a[i] *= 2;
 		a[i] += r;
 		r = a[i] / pow(10, DIGITS);
-		if (r == 1) a[i] -= pow(10, DIGITS);
+		if (r != 0) a[i] -= r * pow(10, DIGITS);
 	}
 
 	return r;
@@ -81,7 +81,9 @@ bool processFractionalPart(string fractional, vector <int> &_frac, vector <bool>
 
 int checkUnderflow(vector <bool> binFrac) {
 	int floating = 0;
-	for (int i = 0; !binFrac[i]; i++) floating--;
+	for (int i = 0; !binFrac[i]; i++) 
+		floating--;
+	floating--;
 	return (binFrac.size() + floating == 0) ? 0 : floating;
 }
 
@@ -118,10 +120,8 @@ void scanQfloat(Qfloat &x) {
 	int floating = 0;
 	int exponent = 0;
 	if (intergral == "0") { // check if 0.xxxx
-		if (checkUnderflow(binFrac)) {
-			floating -= (floating < (-pow(2, EXPONENT - 1) + 2)) ? 1 : 0;
-		}
-		else {
+		floating = checkUnderflow(binFrac);
+		if (!floating) {
 			cout << "Error: Underflow" << endl;
 			return;
 		}
@@ -309,7 +309,7 @@ void printQfloat(Qfloat x) {
 		if (bit == 1) {
 			_x = discreteSum(_x, temp);
 		}
-			
+
 		i++;
 	}
 
@@ -325,15 +325,25 @@ void printQfloat(Qfloat x) {
 
 	// convert to string
 	string str = "";
+	string _temp;
 	bit = (x.data[0] >> 31) & 1;
 	if (bit == 1) str += "-";
 	for (int i = 0; i < _x._int.size(); i++) {
-		str += to_string(_x._int[i]);
+		_temp = to_string(_x._int[i]);
+		if (i != 0)
+			while (_temp.size() <8) _temp.insert(_temp.begin(), '0');
+		str += _temp;
 	}
 	str += ".";
 
+	while ((_x._frc[_x._frc.size() - 1] % 10 == 0) && (_x._frc[_x._frc.size() - 1] != 0))
+		_x._frc[_x._frc.size() - 1] /= 10;
+
 	for (int i = 0; i < _x._frc.size(); i++) {
-		str += to_string(_x._frc[i]);
+		_temp = to_string(_x._frc[i]);
+		if(i != _x._frc.size() - 1)
+			while (_temp.size() < 8) _temp.insert(_temp.begin(), '0');
+		str += _temp;
 	}
 
 	cout << str << endl;
