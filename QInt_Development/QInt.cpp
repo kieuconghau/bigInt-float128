@@ -22,6 +22,17 @@ bool isZero(QInt x) {
 }
 
 
+/* Check if QInt is the minimum QInt: 100...000 */
+bool isMinQInt(QInt x) {
+	for (int i = 1; i < DATA_COUNT; ++i) {
+		if (x.data[i] != 0)
+			return false;
+	}
+
+	return x.data[0] == 1 << 31;
+}
+
+
 /* Check if a string is one */
 bool isOne(string str) {
 	if (str[0] == '-')
@@ -153,7 +164,9 @@ void printQInt(QInt x) {
 		// Convert QInt from the negative form to the positve form
 		QInt one;
 		one.data[DATA_COUNT - 1] |= 1;
-		x = ~(x - one);
+
+		if (!isMinQInt(x))		// If x is MIN_QINT, we don't need to convert it to th positive form.
+			x = ~(x - one);
 	}
 
 	// Convert 'data' in QInt to string form

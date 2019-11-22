@@ -6,11 +6,11 @@
 using namespace std;
 
 
-#define BYTE_COUNT 16									// BigInt 16 bytes
+#define BYTE_COUNT 16										// BigInt 16 bytes
 #define BIT_COUNT BYTE_COUNT * 8							// 128
 
 #define DATA_COUNT BYTE_COUNT / sizeof(uint32_t)			// 4
-#define UINT_BIT_SIZE sizeof(uint32_t) * 8				// 32
+#define UINT_BIT_SIZE sizeof(uint32_t) * 8					// 32
 
 
 struct QInt {
@@ -25,6 +25,9 @@ bool isNegative(QInt x);
 bool isPositive(QInt x);
 
 bool isZero(QInt x);
+
+bool isMinQInt(QInt x);
+
 
 bool isOne(string str);
 
@@ -99,3 +102,4 @@ QInt logicalShiftRight(QInt x, int shift_bit_num);
 QInt rol(QInt x, int shift_bit_num);
 
 QInt ror(QInt x, int rotate_bit_num);
+
