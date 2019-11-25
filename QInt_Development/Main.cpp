@@ -1,12 +1,10 @@
 #include "QInt.h"
+using namespace std;
 
 int main() {
 	QInt x;
-	
 	scanQInt(x);
-	for (int i = 0; i < 4; ++i) {
-		cout << x.data[i] << endl;
-	}
-
+	printBin(x);
+	printQInt(x);
 	return 0;
 }
