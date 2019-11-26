@@ -28,7 +28,7 @@ int checkUnderflow(vector <bool> binFrac);
 void scanQfloat(Qfloat &x);
 void printBinaryQfloat(Qfloat x);
 
-Qfloat binToDec(bool *bit);
+Qfloat binToDecQFloat(bool *bit);
 bool *decToBin(Qfloat x);
 
 

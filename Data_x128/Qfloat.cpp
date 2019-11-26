@@ -161,7 +161,7 @@ void printBinaryQfloat(Qfloat x) {
 	}
 }
 
-Qfloat binToDec(bool *bit) {
+Qfloat binToDecQFloat(bool *bit) {
 	Qfloat x;
 
 	for (int i = 0; i < BITS; i++) {
