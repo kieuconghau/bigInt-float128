@@ -61,6 +61,8 @@ string binToHex(bool* bit);
 
 string decToHex(QInt x);
 
+QInt hexToDec(string hex);
+
 
 QInt operator+(QInt x, QInt y);
 

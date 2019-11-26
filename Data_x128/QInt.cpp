@@ -309,11 +309,31 @@ string binToHex(bool* bit) {
 }
 
 
-/* e. Hexdecimal to Binary */
+/* f. Decimal to Hexadecimal */
 string decToHex(QInt x) {
 	bool* bit = decToBin(x);
 
 	return binToHex(bit);
+}
+
+
+/* Hexadecimal to Decimal */
+QInt hexToDec(string hex) {
+	QInt res;
+
+	int i = hex.size() - 1;
+	int j = BIT_COUNT - 1;
+	uint32_t temp;
+
+	while (i >= 0 && j >= 0) {
+		temp = hex[i] >= '0' && hex[i] <= '9' ? hex[i] - '0' : hex[i] - 'A' + 10;
+		res.data[j / 32] |= temp << (31 - j % 32);		// 0, 4, 8, 12, 16, 20, 24, 28
+		
+		--i;
+		j -= 4;
+	}
+
+	return res;
 }
 
 
