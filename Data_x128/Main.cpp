@@ -1,10 +1,10 @@
-#include "QInt.h"
-#include "Qfloat.h"
+#include "Console.h"
 
 int main() {
-	
+
+	consoleMode();
 
 
-	
+	system("pause");
 	return 0;
 }
