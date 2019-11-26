@@ -71,7 +71,7 @@ void scanQInt(QInt& x) {
 	bool is_not_overflow = decStrToBinStr(str, bit, BIT_COUNT);
 
 	if (is_not_overflow)
-		x = binToDec(bit);			// Convert a binary sequence to QInt (bool* -> QInt)
+		x = binToDecQInt(bit);			// Convert a binary sequence to QInt (bool* -> QInt)
 	else
 		cout << "\aError: Overflow" << endl;
 
@@ -99,7 +99,7 @@ bool decStrToBinStr(string str, bool* bit, int bit_count) {
 	while (bit_count > 1) {						// Ignore bit[0]: sign bit
 		--bit_count;
 		bit[bit_count] = posDecStrMod2(str);	// Modulo 2
-		str = posDecStrDivide2(str);			// Divide 2
+		str = posDecStrDivideBy2(str);			// Divide 2
 	}
 
 	// If this number is negative, convert the positive form to the negative form (bool* -> bool*)
@@ -131,7 +131,7 @@ bool decStrToBinStr(string str, bool* bit, int bit_count) {
 
 
 /* Positive decimal string divide 2 */
-string posDecStrDivide2(string str) {	// Divisor = 2
+string posDecStrDivideBy2(string str) {	// Divisor = 2
 	string quo;
 
 	uint8_t re = 0;		// remainder
@@ -179,13 +179,13 @@ void printQInt(QInt x) {
 	for (int i = 1; i < DATA_COUNT; i++) {
 		if (x.data[DATA_COUNT - 1 - i] > 0) {
 			for (int j = 0; j < 32 * i; j++) {
-				str_data[DATA_COUNT - 1 - i] = posDecStrMultiply2(str_data[DATA_COUNT - 1 - i]);
+				str_data[DATA_COUNT - 1 - i] = posDecStrMultiplyBy2(str_data[DATA_COUNT - 1 - i]);
 			}
 		}
 	}
 
 	for (int i = 1; i < DATA_COUNT; i++) {
-		str_data[0] = posDecStrAddDecStr(str_data[0], str_data[i]);
+		str_data[0] = posDecStrAddPosDecStr(str_data[0], str_data[i]);
 	}
 
 	output += str_data[0];
@@ -195,7 +195,7 @@ void printQInt(QInt x) {
 
 
 /* Positive decimal string multiply 2 */
-string posDecStrMultiply2(string str) {	// Factor = 2
+string posDecStrMultiplyBy2(string str) {	// Factor = 2
 	string prod;
 
 	uint8_t carry = 0;	// The number which will be "carried" to the preceding digit
@@ -216,7 +216,7 @@ string posDecStrMultiply2(string str) {	// Factor = 2
 
 
 /* Positive decimal string add decimal string */
-string posDecStrAddDecStr(string str1, string str2) {
+string posDecStrAddPosDecStr(string str1, string str2) {
 	string sum;
 
 	uint8_t carry = 0;
@@ -279,7 +279,7 @@ void printBin(QInt x) {
 
 
 /* d. Binary sequence to Decimal (QInt) */
-QInt binToDec(bool* bit) {
+QInt binToDecQInt(bool* bit) {
 	QInt x;
 
 	for (int i = BIT_COUNT - 1; i >= 0; --i) {

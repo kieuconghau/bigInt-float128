@@ -38,23 +38,23 @@ void scanQInt(QInt& x);
 
 bool decStrToBinStr(string str, bool* bit, int bit_size);
 
-string posDecStrDivide2(string str);
+string posDecStrDivideBy2(string str);
 
 bool posDecStrMod2(string str);
 
 
 void printQInt(QInt x);
 
-string posDecStrMultiply2(string str);
+string posDecStrMultiplyBy2(string str);
 
-string posDecStrAddDecStr(string str1, string str2);
+string posDecStrAddPosDecStr(string str1, string str2);
 
 
 bool* decToBin(QInt x);
 
 void printBin(QInt x);
 
-QInt binToDec(bool* bit);
+QInt binToDecQInt(bool* bit);
 
 
 string binToHex(bool* bit);
