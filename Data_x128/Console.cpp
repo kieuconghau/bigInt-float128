@@ -275,9 +275,14 @@ void printBinNumber(QInt x, int column, int row) {
 	bool* bit = decToBin(x);
 
 	for (int i = 0; i < DATA_COUNT; ++i) {
-
+		gotoXY(column, row + i);
+		
+		for (int j = 0; j < UINT_BIT_SIZE; ++j) {
+			cout << bit[UINT_BIT_SIZE * i + j];
+			if (j % 8 == 7)
+				cout << " ";
+		}
 	}
-
 
 	delete[] bit;
 }

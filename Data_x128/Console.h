@@ -66,6 +66,8 @@ NumberStatus scanHexNumber(QInt& x, string hex_str);
 
 NumberStatus scanNumber(QInt& x, string num, Base base);
 
+void printBinNumber(QInt x, int column = whereX(), int row = whereY());
+
 void printQInt(QInt x, Base base);
 
 
