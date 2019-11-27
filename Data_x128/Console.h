@@ -51,6 +51,8 @@ bool scanBinNumber(QInt& x, string str);
 
 bool scanDecNumber(QInt& x, string dec_str);
 
+bool scanHexNumber(QInt& x, string hex_str);
+
 void printQInt(QInt x, Base base);
 
 

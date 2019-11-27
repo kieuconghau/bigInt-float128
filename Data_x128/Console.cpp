@@ -206,7 +206,7 @@ bool scanBinNumber(QInt& x, string bin_str) {
 
 /* Input a number in decimal base and check if it is valid and not overflow */
 bool scanDecNumber(QInt& x, string dec_str) {
-	if (!isDecNumber(dec_str))
+	if (!isDecNumber(dec_str))				// Number in decimal base?
 		return false;
 
 	bool* bit = new bool[BIT_COUNT]();		// Convert string to bool* and check not overflow
@@ -222,6 +222,21 @@ bool scanDecNumber(QInt& x, string dec_str) {
 	return true;
 }
 
+
+/* Input a number in hexadecimal base and check if it is valid and not overflow */
+bool scanHexNumber(QInt& x, string hex_str) {
+	if (!isNumber(hex_str, Base::HEXADECIMAL))	// Number in hexadecimal base?
+		return false;
+
+	if (hex_str.size() > BIT_COUNT / 4)			// Overflow?
+		return false;
+
+	normalizeHexString(hex_str);
+
+	x = hexToDec(hex_str);
+
+	return true;
+}
 
 void printQInt(QInt x, Base base) {
 	string res;
