@@ -9,7 +9,11 @@ bool isInRange(string s, int start, int end) {
 	if (!isNumber(s, Base::DECIMAL_))
 		return false;
 
-	return s >= to_string(start) && s <= to_string(end);
+	if (s.size() >= 10)
+		return false;
+
+	int num = stoi(s);
+	return num >= start && num <= end;
 }
 
 
@@ -86,6 +90,34 @@ string getArithmeticOperatorSymbol(Arithmetic ari) {
 		return "/";
 	default:
 		_BUG_LOG_ << "<string getArithmeticOperatorSymbol(Arithmetic ari);>" << endl;
+		cout << "\a";
+		return "Bug!!!!!";
+	}
+}
+
+
+/* Get the bitwise operator's symbol: & or | or ^ or ~ or >> or << or ROR or ROL */
+string getBitwiseOperatorSymbol(Bitwise btw) {
+	switch (btw)
+	{
+	case Bitwise::AND_:
+		return "&";
+	case Bitwise::OR_:
+		return "|";
+	case Bitwise::XOR_:
+		return "^";
+	case Bitwise::NOT_:
+		return "~";
+	case Bitwise::ARI_SHIFT_LEFT_:
+		return "<<";
+	case Bitwise::ARI_SHIFT_RIGHT_:
+		return ">>";
+	case Bitwise::ROTATE_LEFT_:
+		return "rol";
+	case Bitwise::ROTATE_RIGHT_:
+		return "ror";
+	default:
+		_BUG_LOG_ << "<string getBitwiseOperatorSymbol(Bitwise btw);>" << endl;
 		cout << "\a";
 		return "Bug!!!!!";
 	}
@@ -1011,6 +1043,7 @@ void menuArithmeticOperators() {
 }
 
 
+/* Menu: arithmetic operators */
 void menuArithmeticOperators(Arithmetic ari) {
 	QInt a;
 	QInt b;
@@ -1122,6 +1155,7 @@ void menuArithmeticOperators(Arithmetic ari) {
 }
 
 
+/* Menu: bitwise operators */
 void menuBitwiseOperators() {
 	string choice;
 
@@ -1163,31 +1197,218 @@ void menuBitwiseOperators() {
 			return;
 		}
 		else if (choice == "1") {
-
+			menuBitwiseOperators(Bitwise::AND_);
 		}
 		else if (choice == "2") {
-
+			menuBitwiseOperators(Bitwise::OR_);
 		}
 		else if (choice == "3") {
-
+			menuBitwiseOperators(Bitwise::XOR_);
 		}
 		else if (choice == "4") {
-
+			menuBitwiseOperator_NOT();
 		}
 		else if (choice == "5") {
-
+			menuBitwiseOperators(Bitwise::ARI_SHIFT_LEFT_);
 		}
 		else if (choice == "6") {
-
+			menuBitwiseOperators(Bitwise::ARI_SHIFT_RIGHT_);
 		}
 		else if (choice == "7") {
-
+			menuBitwiseOperators(Bitwise::ROTATE_LEFT_);
 		}
 		else if (choice == "8") {
-
+			menuBitwiseOperators(Bitwise::ROTATE_RIGHT_);
 		}
 		else {
 			_BUG_LOG_ << "<void menuBitwiseOperators();>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+/* Menu: bitwise operators */
+void menuBitwiseOperators(Bitwise btw) {
+	QInt a;
+	QInt b;
+	QInt c;
+	Notification noti = Notification::NONE_;
+	string choice;
+
+	while (true) {
+		switch (btw)
+		{
+		case Bitwise::AND_:
+			a = b & c;
+			break;
+		case Bitwise::OR_:
+			a = b | c;
+			break;
+		case Bitwise::XOR_:
+			a = b ^ c;
+			break;
+		case Bitwise::NOT_:
+			_BUG_LOG_ << "<void menuBitwiseOperators(Bitwise btw);>" << endl;
+			cout << "\a";
+			return;
+		case Bitwise::ARI_SHIFT_LEFT_:
+			a = b << c;
+			break;
+		case Bitwise::ARI_SHIFT_RIGHT_:
+			a = b >> c;
+			break;
+		case Bitwise::ROTATE_LEFT_:
+			a = rol(b, c);
+			break;
+		case Bitwise::ROTATE_RIGHT_:
+			a = ror(b, c);
+			break;
+		default:
+			_BUG_LOG_ << "<void menuBitwiseOperators(Bitwise btw);>" << endl;
+			cout << "\a";
+			return;
+		}
+
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QInt > Calculate > Bitwise Operators > A = B " << getBitwiseOperatorSymbol(btw) << " C >" << endl;
+			printEqualLine();
+
+			string title = "[ A (" + getBase(_BASE_) + ") = B (" + getBase(_BASE_) + ") " + getBitwiseOperatorSymbol(btw) + " C (" + getBase(_BASE_) + ") ]";
+			printTextAtMiddle(whereY(), title, Color::CYAN, true);
+			textColor(_COLOR_);
+			printMinusLine();
+
+			cout << endl;
+			cout << " * B:  ";
+			printNumber(b, _BASE_);		cout << endl;
+			cout << endl;
+
+			cout << " * C:  ";
+			printNumber(c, _BASE_);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * A:  ";
+			printNumber(a, _BASE_);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * Notification: ";
+			printNotification(noti);		cout << endl;
+			cout << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. Input B" << endl;
+			cout << " 2. Input C" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 2));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+			printEqualLine();
+
+			cout << " Please input B: ";
+			string B_str;
+			getline(cin, B_str);
+
+			noti = scanNumber(b, B_str, _BASE_);
+		}
+		else if (choice == "2") {
+			printEqualLine();
+
+			cout << " Please input C: ";
+			string C_str;
+			getline(cin, C_str);
+
+			noti = scanNumber(c, C_str, _BASE_);
+		}
+		else {
+			_BUG_LOG_ << "<void menuBitwiseOperators(Bitwise btw);>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+void menuBitwiseOperator_NOT() {
+	QInt a;
+	QInt b;
+	Notification noti = Notification::NONE_;
+	string choice;
+
+	while (true) {
+		a = ~b;
+
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QInt > Calculate > Bitwise Operators > A = ~B " << endl;
+			printEqualLine();
+
+			string title = "[ A (" + getBase(_BASE_) + ") = ~B (" + getBase(_BASE_) + ") ]";
+			printTextAtMiddle(whereY(), title, Color::CYAN, true);
+			textColor(_COLOR_);
+			printMinusLine();
+
+			cout << endl;
+			cout << " * B:  ";
+			printNumber(b, _BASE_);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * A:  ";
+			printNumber(a, _BASE_);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * Notification: ";
+			printNotification(noti);		cout << endl;
+			cout << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. Input B" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 1));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+			printEqualLine();
+
+			cout << " Please input B: ";
+			string B_str;
+			getline(cin, B_str);
+
+			noti = scanNumber(b, B_str, _BASE_);
+		}
+		else {
+			_BUG_LOG_ << "<void menuBitwiseOperator_NOT();>" << endl;
 			cout << "\a";
 			return;
 		}

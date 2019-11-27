@@ -39,6 +39,17 @@ enum class Arithmetic {
 	DIVIDE_
 };
 
+enum class Bitwise {
+	AND_,
+	OR_,
+	XOR_,
+	NOT_,
+	ARI_SHIFT_LEFT_,
+	ARI_SHIFT_RIGHT_,
+	ROTATE_LEFT_,
+	ROTATE_RIGHT_
+};
+
 static Color _COLOR_ = Color::WHITE;
 
 static Mode _MODE_ = Mode::QINT_;
@@ -57,6 +68,8 @@ string getBase(Base base = _BASE_);
 string getRelationalOperatorSymbol(Relational cmp);
 
 string getArithmeticOperatorSymbol(Arithmetic ari);
+
+string getBitwiseOperatorSymbol(Bitwise btw);
 
 void printStatus();
 
@@ -126,3 +139,7 @@ void menuArithmeticOperators();
 void menuArithmeticOperators(Arithmetic ari);
 
 void menuBitwiseOperators();
+
+void menuBitwiseOperators(Bitwise btw);
+
+void menuBitwiseOperator_NOT();
