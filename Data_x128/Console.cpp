@@ -181,12 +181,24 @@ void normalizeHexString(string& hex_str) {
 }
 
 
-/* Input a number in binary base and check if it is overflow */
+/* Input a number in binary base and check if it is valid and not overflow */
 bool scanBinNumber(QInt& x, string bin_str) {
-	if (!isNumber(bin_str, Base::BINARY))
+	if (!isNumber(bin_str, Base::BINARY))	// Number in binary base?
 		return false;
 
+	if (bin_str.size() > BIT_COUNT)			// Overflow?
+		return false;
 
+	normalizeBinString(bin_str);
+
+	bool* bit = new bool[BIT_COUNT]();		// Convert string to bool*
+	for (int i = 0; i < BIT_COUNT; ++i)
+		if (bin_str[i] == '1')
+			bit[i] = 1;
+	
+	x = binToDecQInt(bit);					// Convert bool* to QInt
+	
+	delete[] bit;
 
 	return true;
 }
