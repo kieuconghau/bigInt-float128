@@ -24,12 +24,19 @@ enum class Notification {
 	NONE_
 };
 
-enum class Comparison {
+enum class Relational {
 	LESS_,
 	LESS_EQUAL_,
 	GREATER_,
 	GREATER_EQUAL_,
 	EQUAL_
+};
+
+enum class Arithmetic {
+	ADD_,
+	SUBSTRACT_,
+	MULTIPLY_,
+	DIVIDE_
 };
 
 static Color _COLOR_ = Color::WHITE;
@@ -47,7 +54,9 @@ string getMode(Mode mode = _MODE_);
 
 string getBase(Base base = _BASE_);
 
-string getComparisonSymbol(Comparison cmp);
+string getRelationalOperatorSymbol(Relational cmp);
+
+string getArithmeticOperatorSymbol(Arithmetic ari);
 
 void printStatus();
 
@@ -106,8 +115,14 @@ void menuConvert();
 
 void menuConvert(Base base);
 
-void menuCompare();
-
-void menuCompare(Comparison cmp);
-
 void menuCalculate();
+
+void menuRelationalOperators();
+
+void menuRelationalOperators(Relational rel);
+
+void menuArithmeticOperators();
+
+void menuArithmeticOperators(Arithmetic ari);
+
+void menuBitwiseOperators();

@@ -50,22 +50,42 @@ string getBase(Base base) {
 }
 
 
-/* Get comparison's symbol: < or <= or > or >= or == */
-string getComparisonSymbol(Comparison cmp) {
+/* Get the relational operator's symbol: < or <= or > or >= or == */
+string getRelationalOperatorSymbol(Relational cmp) {
 	switch (cmp)
 	{
-	case Comparison::LESS_:
+	case Relational::LESS_:
 		return "<";
-	case Comparison::LESS_EQUAL_:
+	case Relational::LESS_EQUAL_:
 		return "<=";
-	case Comparison::GREATER_:
+	case Relational::GREATER_:
 		return ">";
-	case Comparison::GREATER_EQUAL_:
+	case Relational::GREATER_EQUAL_:
 		return ">=";
-	case Comparison::EQUAL_:
+	case Relational::EQUAL_:
 		return "==";
 	default:
-		_BUG_LOG_ << "<string getComparisonSymbol(Comparison cmp);>" << endl;
+		_BUG_LOG_ << "<string getRelationalOperatorSymbol(Relational rel);>" << endl;
+		cout << "\a";
+		return "Bug!!!!!";
+	}
+}
+
+
+/* Get the arithmetic operator's symbol: + or - or * or / */
+string getArithmeticOperatorSymbol(Arithmetic ari) {
+	switch (ari)
+	{
+	case Arithmetic::ADD_:
+		return "+";
+	case Arithmetic::SUBSTRACT_:
+		return "-";
+	case Arithmetic::MULTIPLY_:
+		return "*";
+	case Arithmetic::DIVIDE_:
+		return "/";
+	default:
+		_BUG_LOG_ << "<string getArithmeticOperatorSymbol(Arithmetic ari);>" << endl;
 		cout << "\a";
 		return "Bug!!!!!";
 	}
@@ -504,12 +524,11 @@ void menuQInt() {
 			cout << " 1. Exchange base" << endl;
 			cout << " 2. Convert" << endl;
 			cout << " 3. Calculate" << endl;
-			cout << " 4. Compare" << endl;
 			printEqualLine();
 		
 			cout << " Select: ";
 			getline(cin, c);
-		} while (!isInRange(c, 0, 4));
+		} while (!isInRange(c, 0, 3));
 
 		if (c == "0") {
 			return;
@@ -522,9 +541,6 @@ void menuQInt() {
 		}
 		else if (c == "3") {
 			menuCalculate();
-		}
-		else if (c == "4") {
-			menuCompare();
 		}
 		else {
 			_BUG_LOG_ << "<void menuQInt();>" << endl;
@@ -714,17 +730,18 @@ void menuConvert(Base base) {
 }
 
 
-/* Menu: Compare 2 QInt */
-void menuCompare() {
+/* Menu: Calculate (+, -, *, /, &, |, ^, ~, >>, <<, rol, ror) */
+void menuCalculate() {
+	string choice;
+
 	while (true) {
-		string c;
 		do {
 			system("cls");
 			printEqualLine();
 			printStatus();
 			printEqualLine();
 
-			cout << " Mode > QInt > Compare >" << endl;
+			cout << " Mode > QInt > Calculate >" << endl;
 			printEqualLine();
 
 			cout << endl << endl;
@@ -737,37 +754,91 @@ void menuCompare() {
 			printEqualLine();
 
 			cout << " 0. Back" << endl;
-			cout << " 1. A = B <  C" << endl;
-			cout << " 2. A = B <= C" << endl;
-			cout << " 3. A = B >  C" << endl;
-			cout << " 4. A = B >= C" << endl;
-			cout << " 5. A = B == C" << endl;
+			cout << " 1. Arithmetic operators" << endl;
+			cout << " 2. Relational operators" << endl;
+			cout << " 3. Bitwise operators" << endl;
 			printEqualLine();
 
 			cout << " Select: ";
-			getline(cin, c);
-		} while (!isInRange(c, 0, 5));
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 3));
 
-		if (c == "0") {
+		if (choice == "0") {
 			return;
 		}
-		else if (c == "1") {
-			menuCompare(Comparison::LESS_);
+		else if (choice == "1") {
+			menuArithmeticOperators();
 		}
-		else if (c == "2") {
-			menuCompare(Comparison::LESS_EQUAL_);
+		else if (choice == "2") {
+			menuRelationalOperators();
 		}
-		else if (c == "3") {
-			menuCompare(Comparison::GREATER_);
-		}
-		else if (c == "4") {
-			menuCompare(Comparison::GREATER_EQUAL_);
-		}
-		else if (c == "5") {
-			menuCompare(Comparison::EQUAL_);
+		else if (choice == "3") {
+			menuBitwiseOperators();
 		}
 		else {
-			_BUG_LOG_ << "<void menuCompare();>" << endl;
+			_BUG_LOG_ << "<void menuCalculate();>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+/* Menu: Compare 2 QInt */
+void menuRelationalOperators() {
+	string choice;
+
+	while (true) {
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QInt > Calculate > Relational Operators >" << endl;
+			printEqualLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. A = B <  C		(Less)" << endl;
+			cout << " 2. A = B <= C		(Less or Equal)" << endl;
+			cout << " 3. A = B >  C		(Greater)" << endl;
+			cout << " 4. A = B >= C		(Greater or Equal)" << endl;
+			cout << " 5. A = B == C		(Equal)" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 5));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+			menuRelationalOperators(Relational::LESS_);
+		}
+		else if (choice == "2") {
+			menuRelationalOperators(Relational::LESS_EQUAL_);
+		}
+		else if (choice == "3") {
+			menuRelationalOperators(Relational::GREATER_);
+		}
+		else if (choice == "4") {
+			menuRelationalOperators(Relational::GREATER_EQUAL_);
+		}
+		else if (choice == "5") {
+			menuRelationalOperators(Relational::EQUAL_);
+		}
+		else {
+			_BUG_LOG_ << "<void menuRelationalOperators();>" << endl;
 			cout << "\a";
 			return;
 		}
@@ -776,7 +847,7 @@ void menuCompare() {
 
 
 /* Menu: Compare 2 QInt with the corresponding operator */
-void menuCompare(Comparison cmp) {
+void menuRelationalOperators(Relational rel) {
 	bool a;
 	QInt b;
 	QInt c;
@@ -784,25 +855,25 @@ void menuCompare(Comparison cmp) {
 	string choice;
 
 	while (true) {
-		switch (cmp)
+		switch (rel)
 		{
-		case Comparison::LESS_:
+		case Relational::LESS_:
 			a = b < c;
 			break;
-		case Comparison::LESS_EQUAL_:
+		case Relational::LESS_EQUAL_:
 			a = b <= c;
 			break;
-		case Comparison::GREATER_:
+		case Relational::GREATER_:
 			a = b > c;
 			break;
-		case Comparison::GREATER_EQUAL_:
+		case Relational::GREATER_EQUAL_:
 			a = b >= c;
 			break;
-		case Comparison::EQUAL_:
+		case Relational::EQUAL_:
 			a = b == c;
 			break;
 		default:
-			_BUG_LOG_ << "<void menuCompare(Comparison cmp);>" << endl;
+			_BUG_LOG_ << "<void menuRelationalOperators(Relational rel);>" << endl;
 			cout << "\a";
 			return;
 		}
@@ -813,10 +884,10 @@ void menuCompare(Comparison cmp) {
 			printStatus();
 			printEqualLine();
 
-			cout << " Mode > QInt > Compare > A = B " << getComparisonSymbol(cmp) << " C >" << endl;
+			cout << " Mode > QInt > Calculate > Relational Operators > A = B " << getRelationalOperatorSymbol(rel) << " C >" << endl;
 			printEqualLine();
 
-			string title = "[ A (Bool) = B (" + getBase(_BASE_) + ") " + getComparisonSymbol(cmp) + " C (" + getBase(_BASE_) + ") ]";
+			string title = "[ A (Bool) = B (" + getBase(_BASE_) + ") " + getRelationalOperatorSymbol(rel) + " C (" + getBase(_BASE_) + ") ]";
 			printTextAtMiddle(whereY(), title, Color::CYAN, true);
 			textColor(_COLOR_);
 			printMinusLine();
@@ -874,7 +945,7 @@ void menuCompare(Comparison cmp) {
 			noti = scanNumber(c, C_str, _BASE_);
 		}
 		else {
-			_BUG_LOG_ << "<void menuCompare(Comparison cmp);>" << endl;
+			_BUG_LOG_ << "<void menuRelationalOperators(Relational rel);>" << endl;
 			cout << "\a";
 			return;
 		}
@@ -882,8 +953,8 @@ void menuCompare(Comparison cmp) {
 }
 
 
-/* Menu: Calculate (+, -, *, /, &, |, ^, ~, >>, <<, rol, ror) */
-void menuCalculate() {
+/* Menu: Arithmetic Operators (+ - * /) */
+void menuArithmeticOperators() {
 	string choice;
 
 	while (true) {
@@ -893,7 +964,7 @@ void menuCalculate() {
 			printStatus();
 			printEqualLine();
 
-			cout << " Mode > QInt > Calculate >" << endl;
+			cout << " Mode > QInt > Calculate > Arithmetic Operators >" << endl;
 			printEqualLine();
 
 			cout << endl << endl;
@@ -906,35 +977,217 @@ void menuCalculate() {
 			printEqualLine();
 
 			cout << " 0. Back" << endl;
-			cout << " 1. " << endl;
-			cout << " 2. " << endl;
-			cout << " 3. " << endl;
+			cout << " 1. A = B + C	(Add)" << endl;
+			cout << " 2. A = B - C	(Substract)" << endl;
+			cout << " 3. A = B * C	(Multiply)" << endl;
+			cout << " 4. A = B / C	(Divide)" << endl;
 			printEqualLine();
 
 			cout << " Select: ";
 			getline(cin, choice);
-		} while (!isInRange(choice, 0, 3));
+		} while (!isInRange(choice, 0, 4));
 
 		if (choice == "0") {
 			return;
 		}
 		else if (choice == "1") {
-			menuCompare(Comparison::LESS_);
+			menuArithmeticOperators(Arithmetic::ADD_);
 		}
 		else if (choice == "2") {
-			menuCompare(Comparison::LESS_EQUAL_);
+			menuArithmeticOperators(Arithmetic::SUBSTRACT_);
 		}
 		else if (choice == "3") {
-			menuCompare(Comparison::GREATER_);
+			menuArithmeticOperators(Arithmetic::MULTIPLY_);
 		}
 		else if (choice == "4") {
-			menuCompare(Comparison::GREATER_EQUAL_);
-		}
-		else if (choice == "5") {
-			menuCompare(Comparison::EQUAL_);
+			menuArithmeticOperators(Arithmetic::DIVIDE_);
 		}
 		else {
-			_BUG_LOG_ << "<void menuCalculate();>" << endl;
+			_BUG_LOG_ << "<void menuArithmeticOperators();>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+void menuArithmeticOperators(Arithmetic ari) {
+	QInt a;
+	QInt b;
+	QInt c;
+	Notification noti = Notification::NONE_;
+	string choice;
+
+	while (true) {
+		switch (ari)
+		{
+		case Arithmetic::ADD_:
+			a = b + c;
+			if ((isPositive(b) && isPositive(c) && isNegative(a)) ||
+				(isNegative(b) && isNegative(c) && isPositive(a)))
+				noti = Notification::OVERFLOW_;
+			break;
+		case Arithmetic::SUBSTRACT_:
+			a = b - c;
+			if ((isPositive(b) && isNegative(c) && isNegative(a)) ||
+				(isNegative(b) && isPositive(c) && isPositive(a)))
+				noti = Notification::OVERFLOW_;
+			break;
+		case Arithmetic::MULTIPLY_:
+			a = b * c;
+			if (!isZero(b) && !isZero(c) && !(a / b == c))
+				noti = Notification::OVERFLOW_;
+			break;
+		case Arithmetic::DIVIDE_:
+			a = b / c;
+			if (isZero(c))
+				noti = Notification::DIVIDE_BY_ZERO_;
+			break;
+		default:
+			break;
+		}
+
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QInt > Calculate > Arithmetic Operators > A = B " << getArithmeticOperatorSymbol(ari) << " C >" << endl;
+			printEqualLine();
+
+			string title = "[ A (" + getBase(_BASE_) + ") = B (" + getBase(_BASE_) + ") " + getArithmeticOperatorSymbol(ari) + " C (" + getBase(_BASE_) + ") ]";
+			printTextAtMiddle(whereY(), title, Color::CYAN, true);
+			textColor(_COLOR_);
+			printMinusLine();
+
+			cout << endl;
+			cout << " * B:  ";
+			printNumber(b, _BASE_);		cout << endl;
+			cout << endl;
+
+			cout << " * C:  ";
+			printNumber(c, _BASE_);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * A:  ";
+			printNumber(a, _BASE_);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * Notification: ";
+			printNotification(noti);		cout << endl;
+			cout << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. Input B" << endl;
+			cout << " 2. Input C" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 2));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+			printEqualLine();
+
+			cout << " Please input B: ";
+			string B_str;
+			getline(cin, B_str);
+
+			noti = scanNumber(b, B_str, _BASE_);
+		}
+		else if (choice == "2") {
+			printEqualLine();
+
+			cout << " Please input C: ";
+			string C_str;
+			getline(cin, C_str);
+
+			noti = scanNumber(c, C_str, _BASE_);
+		}
+		else {
+			_BUG_LOG_ << "<void menuArithmeticOperators(Arithmetic ari);>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+void menuBitwiseOperators() {
+	string choice;
+
+	while (true) {
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QInt > Calculate > Bitwise Operators >" << endl;
+			printEqualLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. A = B & C		(And)" << endl;
+			cout << " 2. A = B | C		(Or)" << endl;
+			cout << " 3. A = B ^ C		(Xor)" << endl;
+			cout << " 4. A = ~B		(Not)" << endl;
+			cout << " 5. A = B << C		(Arithmetic Shift Left)" << endl;
+			cout << " 6. A = B >> C		(Arithmetic Shift Right)" << endl;
+			cout << " 7. A = B rol C		(Rotate Left)" << endl;
+			cout << " 8. A = B ror C		(Rotate Right)" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 8));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+
+		}
+		else if (choice == "2") {
+
+		}
+		else if (choice == "3") {
+
+		}
+		else if (choice == "4") {
+
+		}
+		else if (choice == "5") {
+
+		}
+		else if (choice == "6") {
+
+		}
+		else if (choice == "7") {
+
+		}
+		else if (choice == "8") {
+
+		}
+		else {
+			_BUG_LOG_ << "<void menuBitwiseOperators();>" << endl;
 			cout << "\a";
 			return;
 		}

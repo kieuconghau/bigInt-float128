@@ -299,7 +299,7 @@ void printBin(QInt x) {
 }
 
 
-/* carry. Binary sequence to Decimal (QInt) */
+/* d. Binary sequence to Decimal (QInt) */
 QInt binToDecQInt(bool* bit) {
 	QInt x;
 
@@ -374,10 +374,10 @@ QInt operator+(QInt x, QInt y) {
 		carry = (a + b + carry) >> 1;
 	}
 
-	if ((isPositive(x) && isPositive(y) && isNegative(sum)) ||
+	/*if ((isPositive(x) && isPositive(y) && isNegative(sum)) ||
 		(isNegative(x) && isNegative(y) && isPositive(sum))) {
 		cout << "\aWarning: overflow" << endl;
-	}
+	}*/
 
 	return sum;
 }
@@ -400,10 +400,10 @@ QInt operator-(QInt x, QInt y) {
 		carry = (a >> 1) - ((a - b - carry) >> 1);
 	}
 
-	if ((isPositive(x) && isNegative(y) && isNegative(dif)) ||
+	/*if ((isPositive(x) && isNegative(y) && isNegative(dif)) ||
 		(isNegative(x) && isPositive(y) && isPositive(dif))) {
 		cout << "\aWarning: overflow" << endl;
-	}
+	}*/
 
 	return dif;
 }
@@ -441,8 +441,8 @@ QInt operator*(QInt x, QInt y) {
 QInt operator/(QInt x, QInt y) {
 	if (isZero(x))		// return 0 if x == 0
 		return x;
-	if (isZero(y))		// warn if y == 0
-		throw "Divisor cannot be zero!";
+	//if (isZero(y))		// warn if y == 0
+	//	throw "Divisor cannot be zero!";
 
 	bool is_negative = isNegative(x) ^ isNegative(y);		// sign of the quotient
 
@@ -476,7 +476,7 @@ QInt operator/(QInt x, QInt y) {
 		}
 	}
 
-	if (is_negative)
+	if (is_negative && !isMinQInt(Q))
 		Q = ~(Q - one);		// convert the positive (result) to the negative
 
 	return Q;
