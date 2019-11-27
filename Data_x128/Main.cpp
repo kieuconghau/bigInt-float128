@@ -2,7 +2,6 @@
 #include "Qfloat.h"
 
 int main() {
-	float y = 0;
 	Qfloat x;
 	scanQfloat(x);
 	printBinaryQfloat(x);

@@ -112,7 +112,7 @@ void scanQfloat(Qfloat &x) {
 	string integral = str.substr(0, idx_dot); // integral part of str
 	string fractional = str.substr(idx_dot + 1, str.size() - idx_dot); // fractional part of str
 
-	// ==== PROCESS integral PART ====
+	// ==== PROCESS INTEGRAL PART ====
 	int nInt = (int)((integral.size() % DIGITS == 0) ? (integral.size() / DIGITS) : (integral.size() / DIGITS) + 1); // calc range
 	vector <int> _int(nInt);
 	vector <bool> binInt;
@@ -124,7 +124,7 @@ void scanQfloat(Qfloat &x) {
 	vector <bool> binFrac;
 	processFractionalPart(fractional, _frac, binFrac, binInt);
 
-	if (nFrac == 1 && nInt == 1 && _int[0] == 0 && _frac[0] == 0) return; // Qfloat 0
+	if (nFrac == 1 && nInt == 1 && binFrac.size() == 0 && binInt.size() == 0) return; // Qfloat 0
 
 	// ==== PROCESS EXPONENT ====
 	int floating = 0;
