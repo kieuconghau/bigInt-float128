@@ -440,19 +440,32 @@ QInt operator/(QInt x, QInt y) {
 
 	for (int i = 0; i < BIT_COUNT; ++i) {
 		// logicalShiftLeft A, Q
+		cout << " i = " << i << endl;
 		A = A << 1;
+		cout << "A: " << endl;  for (int i = 0; i < 4; i++) cout << A.data[i] << " ";
+		cout << endl;
 		A.data[DATA_COUNT - 1] |= Q.data[0] >> (UINT_BIT_SIZE - 1);
 		Q = Q << 1;
-
+		cout << "Q: " << endl;  for (int i = 0; i < 4; i++) cout << Q.data[i] << " ";
+		cout << endl;
 		A = A - M;
+		cout << "A: " << endl;  for (int i = 0; i < 4; i++) cout << A.data[i] << " ";
+		cout << endl;
 
 		if (isNegative(A)) {
 			Q.data[DATA_COUNT - 1] &= ~1;		// ~1: 111..110
+			cout << "Q: " << endl;  for (int i = 0; i < 4; i++) cout << Q.data[i] << " ";
+			cout << endl;
 			A = A + M;
+			cout << "A: " << endl;  for (int i = 0; i < 4; i++) cout << A.data[i] << " ";
+			cout << endl;
 		}
 		else {
 			Q.data[DATA_COUNT - 1] |= 1;
+			cout << "Q: " << endl;  for (int i = 0; i < 4; i++) cout << Q.data[i] << " ";
+			cout << endl;
 		}
+		cout << endl;
 	}
 
 	if (is_negative)
