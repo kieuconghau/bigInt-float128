@@ -16,10 +16,12 @@ enum class Base {
 	HEXADECIMAL_
 };
 
-enum class NumberStatus {
-	VALID_,					// VALID_ = !(INVALID_ or OVERFLOW_)
-	INVALID_,
-	OVERFLOW_
+enum class Notification {
+	VALID_NUMBER_,					// VALID_NUMBER_ = !(NOT_NUMBER_ or OVERFLOW_ or DIVIDE_BY_ZERO_)
+	NOT_NUMBER_,
+	OVERFLOW_,
+	DIVIDE_BY_ZERO_,
+	NONE_
 };
 
 enum class Comparison {
@@ -49,7 +51,7 @@ string getComparisonSymbol(Comparison cmp);
 
 void printStatus();
 
-void printNotification(NumberStatus num_status);
+void printNotification(Notification noti);
 
 void printEqualLine();
 
@@ -73,13 +75,13 @@ void denormalizeBinString(string& bin_str);
 
 void denormalizeHexString(string& hex_string);
 
-NumberStatus scanBinNumber(QInt& x, string str);
+Notification scanBinNumber(QInt& x, string str);
 
-NumberStatus scanDecNumber(QInt& x, string dec_str);
+Notification scanDecNumber(QInt& x, string dec_str);
 
-NumberStatus scanHexNumber(QInt& x, string hex_str);
+Notification scanHexNumber(QInt& x, string hex_str);
 
-NumberStatus scanNumber(QInt& x, string num, Base base);
+Notification scanNumber(QInt& x, string num, Base base);
 
 void printBinNumber(QInt x, int column = whereX(), int row = whereY());
 
@@ -108,3 +110,4 @@ void menuCompare();
 
 void menuCompare(Comparison cmp);
 
+void menuCalculate();

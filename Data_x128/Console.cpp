@@ -80,17 +80,23 @@ void printStatus() {
 
 
 /* Display the notification about number status */
-void printNotification(NumberStatus num_status) {
-	switch (num_status)
+void printNotification(Notification noti) {
+	switch (noti)
 	{
-	case NumberStatus::VALID_:
+	case Notification::VALID_NUMBER_:
 		cout << "The value is valid.";
 		break;
-	case NumberStatus::INVALID_:
-		cout << "\aThe value is invalid. Please input a number in " << getBase() << " base.";
+	case Notification::NOT_NUMBER_:
+		cout << "\aThe value is not a number. Please input a number in " << getBase() << " base.";
 		break;
-	case NumberStatus::OVERFLOW_:
+	case Notification::OVERFLOW_:
 		cout << "\aThe value is overflow.";
+		break;
+	case Notification::DIVIDE_BY_ZERO_:
+		cout << "\aCan not divide by zero.";
+		break;
+	case Notification::NONE_:
+		cout << "...";
 		break;
 	default:
 		_BUG_LOG_ << "<void printNotification(NumberStatus num_status);>";
@@ -250,12 +256,12 @@ void denormalizeHexString(string& hex_string) {
 
 
 /* Input a number in binary base and check if it is valid and not overflow */
-NumberStatus scanBinNumber(QInt& x, string bin_str) {
+Notification scanBinNumber(QInt& x, string bin_str) {
 	if (!isNumber(bin_str, Base::BINARY_))	// Number in binary base?
-		return NumberStatus::INVALID_;
+		return Notification::NOT_NUMBER_;
 
 	if (bin_str.size() > BIT_COUNT)			// Overflow?
-		return NumberStatus::OVERFLOW_;
+		return Notification::OVERFLOW_;
 
 	normalizeBinString(bin_str);
 
@@ -268,47 +274,47 @@ NumberStatus scanBinNumber(QInt& x, string bin_str) {
 	
 	delete[] bit;
 
-	return NumberStatus::VALID_;
+	return Notification::VALID_NUMBER_;
 }
 
 
 /* Input a number in decimal base and check if it is valid and not overflow */
-NumberStatus scanDecNumber(QInt& x, string dec_str) {
+Notification scanDecNumber(QInt& x, string dec_str) {
 	if (!isDecNumber(dec_str))				// Number in decimal base?
-		return NumberStatus::INVALID_;
+		return Notification::NOT_NUMBER_;
 
 	bool* bit = new bool[BIT_COUNT]();		// Convert string to bool* and check not overflow
 	bool is_not_overflow = decStrToBinStr(dec_str, bit, BIT_COUNT);
 
 	if (!is_not_overflow)
-		return NumberStatus::OVERFLOW_;
+		return Notification::OVERFLOW_;
 
 	x = binToDecQInt(bit);					// Convert bool* to QInt
 
 	delete[] bit;
 
-	return NumberStatus::VALID_;
+	return Notification::VALID_NUMBER_;
 }
 
 
 /* Input a number in hexadecimal base and check if it is valid and not overflow */
-NumberStatus scanHexNumber(QInt& x, string hex_str) {
+Notification scanHexNumber(QInt& x, string hex_str) {
 	if (!isNumber(hex_str, Base::HEXADECIMAL_))	// Number in hexadecimal base?
-		return NumberStatus::INVALID_;
+		return Notification::NOT_NUMBER_;
 
 	if (hex_str.size() > BIT_COUNT / 4)			// Overflow?
-		return NumberStatus::OVERFLOW_;
+		return Notification::OVERFLOW_;
 
 	normalizeHexString(hex_str);
 
 	x = hexToDec(hex_str);
 
-	return NumberStatus::VALID_;
+	return Notification::VALID_NUMBER_;
 }
 
 
 /* Input a number in a correspoding base and check if it is valid and not overflow */
-NumberStatus scanNumber(QInt& x, string num, Base base) {
+Notification scanNumber(QInt& x, string num, Base base) {
 	switch (base)
 	{
 	case Base::BINARY_:
@@ -320,7 +326,7 @@ NumberStatus scanNumber(QInt& x, string num, Base base) {
 	default:
 		_BUG_LOG_ << "<bool scanNumber(QInt& x, string num, Base base);>" << endl;
 		cout << "\a";
-		return NumberStatus::INVALID_;
+		return Notification::NOT_NUMBER_;
 	}
 }
 
@@ -426,7 +432,7 @@ void menuHome() {
 
 		}
 		else {
-			_BUG_LOG_ << "<void menuMain();>" << endl;
+			_BUG_LOG_ << "<void menuHome();>" << endl;
 			cout << "\a";
 			return;
 		}
@@ -515,13 +521,13 @@ void menuQInt() {
 			menuConvert();
 		}
 		else if (c == "3") {
-
+			menuCalculate();
 		}
 		else if (c == "4") {
 			menuCompare();
 		}
 		else {
-			_BUG_LOG_ << "<void menuQInt()>" << endl;
+			_BUG_LOG_ << "<void menuQInt();>" << endl;
 			cout << "\a";
 			return;
 		}
@@ -577,7 +583,7 @@ void menuExchangeBase() {
 			return;
 		}
 		else {
-			_BUG_LOG_ << "<void menuExchangeBase()>" << endl;
+			_BUG_LOG_ << "<void menuExchangeBase();>" << endl;
 			cout << "\a";
 			return;
 		}
@@ -629,7 +635,7 @@ void menuConvert() {
 			menuConvert(Base::HEXADECIMAL_);
 		}
 		else {
-			_BUG_LOG_ << "<void menuConvert()>" << endl;
+			_BUG_LOG_ << "<void menuConvert();>" << endl;
 			cout << "\a";
 			return;
 		}
@@ -641,7 +647,7 @@ void menuConvert() {
 void menuConvert(Base base) {
 	QInt a;
 	QInt b;
-	NumberStatus num_status = NumberStatus::VALID_;
+	Notification noti = Notification::NONE_;
 
 	string c;
 	while (true) {
@@ -675,7 +681,7 @@ void menuConvert(Base base) {
 
 			cout << endl;
 			cout << " * Notification: ";
-			printNotification(num_status);		cout << endl;
+			printNotification(noti);		cout << endl;
 			cout << endl;
 			printEqualLine();
 
@@ -697,10 +703,10 @@ void menuConvert(Base base) {
 			string B_str;
 			getline(cin, B_str);
 
-			num_status = scanNumber(b, B_str, _BASE_);
+			noti = scanNumber(b, B_str, _BASE_);
 		}
 		else {
-			_BUG_LOG_ << "<void menuConvertToBin()>" << endl;
+			_BUG_LOG_ << "<void menuConvert(Base base);>" << endl;
 			cout << "\a";
 			return;
 		}
@@ -761,7 +767,7 @@ void menuCompare() {
 			menuCompare(Comparison::EQUAL_);
 		}
 		else {
-			_BUG_LOG_ << "<void menuQInt()>" << endl;
+			_BUG_LOG_ << "<void menuCompare();>" << endl;
 			cout << "\a";
 			return;
 		}
@@ -771,10 +777,10 @@ void menuCompare() {
 
 /* Menu: Compare 2 QInt with the corresponding operator */
 void menuCompare(Comparison cmp) {
-	bool a = 0;
+	bool a;
 	QInt b;
 	QInt c;
-	NumberStatus num_status = NumberStatus::VALID_;
+	Notification noti = Notification::NONE_;
 	string choice;
 
 	while (true) {
@@ -833,7 +839,7 @@ void menuCompare(Comparison cmp) {
 
 			cout << endl;
 			cout << " * Notification: ";
-			printNotification(num_status);		cout << endl;
+			printNotification(noti);		cout << endl;
 			cout << endl;
 			printEqualLine();
 
@@ -856,7 +862,7 @@ void menuCompare(Comparison cmp) {
 			string B_str;
 			getline(cin, B_str);
 
-			num_status = scanNumber(b, B_str, _BASE_);
+			noti = scanNumber(b, B_str, _BASE_);
 		}
 		else if (choice == "2") {
 			printEqualLine();
@@ -865,10 +871,70 @@ void menuCompare(Comparison cmp) {
 			string C_str;
 			getline(cin, C_str);
 
-			num_status = scanNumber(c, C_str, _BASE_);
+			noti = scanNumber(c, C_str, _BASE_);
 		}
 		else {
-			_BUG_LOG_ << "<void menuConvertToBin()>" << endl;
+			_BUG_LOG_ << "<void menuCompare(Comparison cmp);>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+/* Menu: Calculate (+, -, *, /, &, |, ^, ~, >>, <<, rol, ror) */
+void menuCalculate() {
+	string choice;
+
+	while (true) {
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QInt > Calculate >" << endl;
+			printEqualLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. " << endl;
+			cout << " 2. " << endl;
+			cout << " 3. " << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 3));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+			menuCompare(Comparison::LESS_);
+		}
+		else if (choice == "2") {
+			menuCompare(Comparison::LESS_EQUAL_);
+		}
+		else if (choice == "3") {
+			menuCompare(Comparison::GREATER_);
+		}
+		else if (choice == "4") {
+			menuCompare(Comparison::GREATER_EQUAL_);
+		}
+		else if (choice == "5") {
+			menuCompare(Comparison::EQUAL_);
+		}
+		else {
+			_BUG_LOG_ << "<void menuCalculate();>" << endl;
 			cout << "\a";
 			return;
 		}
