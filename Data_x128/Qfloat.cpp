@@ -128,13 +128,18 @@ void scanQfloat(Qfloat &x) {
 	int exponent = 0;
 	if (integral == "0") { // check if 0.xxxx
 		floating = checkUnderflow(binFrac);
-		if (!floating) {
+		if (!floating) { // check if Underflow
 			cout << "Error: Underflow" << endl;
 			return; 
 		}
 	}
 	else floating = binInt.size() - 1; // dot move to left
 	exponent = (floating > (-pow(2, EXPONENT - 1) + 2))? floating + (pow(2, EXPONENT - 1) - 1) : 0; /* Check exponent is normal or denormalized */
+
+	if (exponent > (pow(2, 15) - 1)) {	// check if Overflow
+		cout << "Error: Overflow" << endl;
+		return;
+	}
 
 	vector <int> ex;
 	ex.push_back(exponent);
