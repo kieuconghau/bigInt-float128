@@ -1,16 +1,20 @@
 #include "TestMode.h"
 #include "QInt.h"
+#include "Qfloat.h"
 
 /* Almost the same as scanQInt */
 QInt DecStrToQInt(string dec_str) {
-	QInt qint;
+	QInt x;
 	
 	bool* bit = new bool[BIT_COUNT]();
-	decStrToBinStr(dec_str, bit, BIT_COUNT);
-	qint = binToDec(bit);
+	bool is_not_overflow = decStrToBinStr(dec_str, bit, BIT_COUNT);
+
+	if (is_not_overflow)
+		x = binToDecQInt(bit);
+
 	delete[] bit;
 
-	return qint;
+	return x;
 }
 
 /* Almost the same as printQInt */
@@ -39,13 +43,13 @@ string QIntToDecStr(QInt x) {
 	for (int i = 1; i < DATA_COUNT; i++) {
 		if (x.data[DATA_COUNT - 1 - i] > 0) {
 			for (int j = 0; j < 32 * i; j++) {
-				str_data[DATA_COUNT - 1 - i] = posDecStrMultiply2(str_data[DATA_COUNT - 1 - i]);
+				str_data[DATA_COUNT - 1 - i] = posDecStrMultiplyBy2(str_data[DATA_COUNT - 1 - i]);
 			}
 		}
 	}
 
 	for (int i = 1; i < DATA_COUNT; i++) {
-		str_data[0] = posDecStrAddDecStr(str_data[0], str_data[i]);
+		str_data[0] = posDecStrAddPosDecStr(str_data[0], str_data[i]);
 	}
 
 	output += str_data[0];
@@ -65,7 +69,7 @@ bool* BinStrToBoolArr(string bin_str) {
 	return bit;
 }
 
-string BoolArrToBinStr(bool* bit) {
+string QIntBoolArrToBinStr(bool* bit) {
 	string bin_str;
 
 	int i = 0;
@@ -106,6 +110,25 @@ bool* HexToBin(string hex) {
 }
 
 
+Qfloat FloatStrToQFloat(string float_str) {
+
+}
+
+string QFloatToFloatStr(Qfloat x) {
+
+}
+
+string QFloatBoolArrToBinStr(bool* bit) {
+	string bin_str;
+
+	for (int i = 0; i < BIT_COUNT; i++) {
+		bin_str += bit[i];
+	}
+
+	return bin_str;
+}
+
+
 string QIntConversion(int p1, int p2, string operand) {
 	string result;
 
@@ -118,7 +141,7 @@ string QIntConversion(int p1, int p2, string operand) {
 			bit = BinStrToBoolArr(operand);		// Binary string -> Bool*
 
 			if (p2 == 10) {
-				QInt qint = binToDec(bit);		// Bool* -> QInt
+				QInt qint = binToDecQInt(bit);		// Bool* -> QInt
 				result = QIntToDecStr(qint);	// QInt -> Decimal string
 			}
 			else if (p2 == 16) {
@@ -135,7 +158,7 @@ string QIntConversion(int p1, int p2, string operand) {
 		else if (p2 == 2) {
 			bool* bit = new bool[BIT_COUNT]();
 			decStrToBinStr(operand, bit, BIT_COUNT);	// Decimal string -> Bool*
-			result = BoolArrToBinStr(bit);				// Bool* -> Binary string
+			result = QIntBoolArrToBinStr(bit);			// Bool* -> Binary string
 
 			delete[] bit;
 		}
@@ -150,8 +173,8 @@ string QIntConversion(int p1, int p2, string operand) {
 		}
 		else if (p2 == 2) {
 			bool* bit = new bool[BIT_COUNT]();
-			bit = HexToBin(operand);		// Hexadecimal string -> Bool*
-			result = BoolArrToBinStr(bit);	// Bool* -> Binary string
+			bit = HexToBin(operand);			// Hexadecimal string -> Bool*
+			result = QIntBoolArrToBinStr(bit);	// Bool* -> Binary string
 
 			delete[] bit;
 		}
@@ -185,7 +208,7 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 	if (p == 2) {
 		bool* bit = new bool[BIT_COUNT]();
 		bit = BinStrToBoolArr(operand_1);
-		op_1 = binToDec(bit);
+		op_1 = binToDecQInt(bit);
 		delete[] bit;
 	}
 	else if (p == 10) {
@@ -199,6 +222,7 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 	if (operation == "~") {
 		result_qint = ~op_1;
 	}
+	/*
 	else if (operation == "<<" || operation == ">>" || operation == "rol" || operation == "ror") {
 		int op_2 = stoi(operand_2);
 		if (operation == "<<") {
@@ -214,13 +238,14 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 			result_qint = ror(op_1, op_2);
 		}
 	}
+	*/
 	else {
 		QInt op_2;
 
 		if (p == 2) {
 			bool* bit = new bool[BIT_COUNT]();
 			bit = BinStrToBoolArr(operand_2);
-			op_2 = binToDec(bit);
+			op_2 = binToDecQInt(bit);
 			delete[] bit;
 		}
 		else if (p == 10) {
@@ -251,6 +276,18 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 		}
 		else if (operation == "^") {
 			result_qint = op_1 ^ op_2;
+		}
+		else if (operation == "<<") {
+			result_qint = op_1 << op_2;
+		}
+		else if (operation == ">>") {
+			result_qint = op_1 >> op_2;
+		}
+		else if (operation == "rol") {
+			result_qint = rol(op_1, op_2);
+		}
+		else {
+			result_qint = ror(op_1, op_2);
 		}
 	}
 

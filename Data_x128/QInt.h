@@ -34,32 +34,39 @@ bool isOne(string str);
 bool isZero(string str);
 
 
+QInt toQInt(int integer);
+
+int toInt(QInt qint);
+
+
 void scanQInt(QInt& x);
 
 bool decStrToBinStr(string str, bool* bit, int bit_size);
 
-string posDecStrDivide2(string str);
+string posDecStrDivideBy2(string str);
 
 bool posDecStrMod2(string str);
 
 
 void printQInt(QInt x);
 
-string posDecStrMultiply2(string str);
+string posDecStrMultiplyBy2(string str);
 
-string posDecStrAddDecStr(string str1, string str2);
+string posDecStrAddPosDecStr(string str1, string str2);
 
 
 bool* decToBin(QInt x);
 
 void printBin(QInt x);
 
-QInt binToDec(bool* bit);
+QInt binToDecQInt(bool* bit);
 
 
 string binToHex(bool* bit);
 
 string decToHex(QInt x);
+
+QInt hexToDec(string hex);
 
 
 QInt operator+(QInt x, QInt y);
@@ -91,15 +98,15 @@ QInt operator^(QInt x, QInt y);
 QInt operator~(QInt x);
 
 
-QInt operator<<(QInt x, int shift_bit_num);
+QInt operator<<(QInt x, QInt shift_bit_num);
 
-QInt logicalShiftLeft(QInt x, int shift_bit_num);
+QInt logicalShiftLeft(QInt x, QInt shift_bit_num);
 
-QInt operator>>(QInt x, int shift_bit_num);
+QInt operator>>(QInt x, QInt shift_bit_num);
 
-QInt logicalShiftRight(QInt x, int shift_bit_num);
+QInt logicalShiftRight(QInt x, QInt shift_bit_num);
 
-QInt rol(QInt x, int shift_bit_num);
+QInt rol(QInt x, QInt shift_bit_num);
 
-QInt ror(QInt x, int rotate_bit_num);
+QInt ror(QInt x, QInt rotate_bit_num);
 

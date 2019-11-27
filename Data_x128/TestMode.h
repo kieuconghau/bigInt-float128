@@ -10,11 +10,18 @@ string QIntToDecStr(QInt x);
 
 bool* BinStrToBoolArr(string bin_str);
 
-string BoolArrToBinStr(bool* bit);
+string QIntBoolArrToBinStr(bool* bit);
 
 QInt HexToDec(string hex);
 
 bool* HexToBin(string hex);
+
+
+Qfloat FloatStrToQFloat(string float_str);
+
+string QFloatToFloatStr(Qfloat x);
+
+string QFloatBoolArrToBinStr(bool* bit);
 
 
 string QIntConversion(int p1, int p2, string operand);

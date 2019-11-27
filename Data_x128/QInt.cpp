@@ -61,6 +61,27 @@ bool isZero(string str) {
 }
 
 
+/* Convert int to QInt */
+QInt toQInt(int integer) {
+	QInt qint;
+	
+	qint.data[DATA_COUNT - 1] |= integer;
+	if (integer < 0) {
+		for (int i = 0; i < DATA_COUNT - 1; ++i) {
+			qint.data[i] = ~0;
+		}
+	}
+
+	return qint;
+}
+
+
+/* Convert QInt to int */
+int toInt(QInt qint) {
+	return qint.data[DATA_COUNT - 1];
+}
+
+
 /* a. Scan QInt */
 void scanQInt(QInt& x) {
 	string str;
@@ -71,7 +92,7 @@ void scanQInt(QInt& x) {
 	bool is_not_overflow = decStrToBinStr(str, bit, BIT_COUNT);
 
 	if (is_not_overflow)
-		x = binToDec(bit);			// Convert a binary sequence to QInt (bool* -> QInt)
+		x = binToDecQInt(bit);			// Convert a binary sequence to QInt (bool* -> QInt)
 	else
 		cout << "\aError: Overflow" << endl;
 
@@ -99,7 +120,7 @@ bool decStrToBinStr(string str, bool* bit, int bit_count) {
 	while (bit_count > 1) {						// Ignore bit[0]: sign bit
 		--bit_count;
 		bit[bit_count] = posDecStrMod2(str);	// Modulo 2
-		str = posDecStrDivide2(str);			// Divide 2
+		str = posDecStrDivideBy2(str);			// Divide 2
 	}
 
 	// If this number is negative, convert the positive form to the negative form (bool* -> bool*)
@@ -131,7 +152,7 @@ bool decStrToBinStr(string str, bool* bit, int bit_count) {
 
 
 /* Positive decimal string divide 2 */
-string posDecStrDivide2(string str) {	// Divisor = 2
+string posDecStrDivideBy2(string str) {	// Divisor = 2
 	string quo;
 
 	uint8_t re = 0;		// remainder
@@ -179,23 +200,23 @@ void printQInt(QInt x) {
 	for (int i = 1; i < DATA_COUNT; i++) {
 		if (x.data[DATA_COUNT - 1 - i] > 0) {
 			for (int j = 0; j < 32 * i; j++) {
-				str_data[DATA_COUNT - 1 - i] = posDecStrMultiply2(str_data[DATA_COUNT - 1 - i]);
+				str_data[DATA_COUNT - 1 - i] = posDecStrMultiplyBy2(str_data[DATA_COUNT - 1 - i]);
 			}
 		}
 	}
 
 	for (int i = 1; i < DATA_COUNT; i++) {
-		str_data[0] = posDecStrAddDecStr(str_data[0], str_data[i]);
+		str_data[0] = posDecStrAddPosDecStr(str_data[0], str_data[i]);
 	}
 
 	output += str_data[0];
 
-	cout << output << endl;
+	cout << output;
 }
 
 
 /* Positive decimal string multiply 2 */
-string posDecStrMultiply2(string str) {	// Factor = 2
+string posDecStrMultiplyBy2(string str) {	// Factor = 2
 	string prod;
 
 	uint8_t carry = 0;	// The number which will be "carried" to the preceding digit
@@ -216,7 +237,7 @@ string posDecStrMultiply2(string str) {	// Factor = 2
 
 
 /* Positive decimal string add decimal string */
-string posDecStrAddDecStr(string str1, string str2) {
+string posDecStrAddPosDecStr(string str1, string str2) {
 	string sum;
 
 	uint8_t carry = 0;
@@ -279,7 +300,7 @@ void printBin(QInt x) {
 
 
 /* d. Binary sequence to Decimal (QInt) */
-QInt binToDec(bool* bit) {
+QInt binToDecQInt(bool* bit) {
 	QInt x;
 
 	for (int i = BIT_COUNT - 1; i >= 0; --i) {
@@ -309,11 +330,31 @@ string binToHex(bool* bit) {
 }
 
 
-/* e. Hexdecimal to Binary */
+/* f. Decimal to Hexadecimal */
 string decToHex(QInt x) {
 	bool* bit = decToBin(x);
 
 	return binToHex(bit);
+}
+
+
+/* Hexadecimal to Decimal */
+QInt hexToDec(string hex) {
+	QInt res;
+
+	int i = hex.size() - 1;
+	int j = BIT_COUNT - 1;
+	uint32_t temp;
+
+	while (i >= 0 && j >= 0) {
+		temp = hex[i] >= '0' && hex[i] <= '9' ? hex[i] - '0' : hex[i] - 'A' + 10;
+		res.data[j / 32] |= temp << (31 - j % 32);		// 0, 4, 8, 12, 16, 20, 24, 28
+		
+		--i;
+		j -= 4;
+	}
+
+	return res;
 }
 
 
@@ -322,21 +363,21 @@ QInt operator+(QInt x, QInt y) {
 	QInt sum;
 	uint8_t a;				// get the i_th bit of x from 127 to 0
 	uint8_t b;				// get the i_th bit of y from 127 to 0
-	uint8_t r = 0;			// remainder
+	uint8_t carry = 0;		// remainder
 
 	for (int i = BIT_COUNT - 1; i >= 0; --i) {
 		a = (x.data[i / 32] >> (31 - i % 32)) & 1;
 		b = (y.data[i / 32] >> (31 - i % 32)) & 1;
 		
-		sum.data[i / 32] |= (a ^ b ^ r) << (31 - i % 32);
+		sum.data[i / 32] |= (a ^ b ^ carry) << (31 - i % 32);
 		
-		r = (a + b + r) >> 1;
+		carry = (a + b + carry) >> 1;
 	}
 
-	if ((isPositive(x) && isPositive(y) && isNegative(sum)) ||
+	/*if ((isPositive(x) && isPositive(y) && isNegative(sum)) ||
 		(isNegative(x) && isNegative(y) && isPositive(sum))) {
 		cout << "\aWarning: overflow" << endl;
-	}
+	}*/
 
 	return sum;
 }
@@ -347,22 +388,22 @@ QInt operator-(QInt x, QInt y) {
 	QInt dif;
 	uint8_t a;				// get the i_th bit of x from 127 to 0
 	uint8_t b;				// get the i_th bit of y from 127 to 0
-	uint8_t d = 0;			// debt
+	uint8_t carry = 0;		// debt
 
 	for (int i = BIT_COUNT - 1; i >= 0; --i) {
 		a = (x.data[i / 32] >> (31 - i % 32)) & 1;
 		b = (y.data[i / 32] >> (31 - i % 32)) & 1;
 
-		dif.data[i / 32] |= (a ^ b ^ d) << (31 - i % 32);
+		dif.data[i / 32] |= (a ^ b ^ carry) << (31 - i % 32);
 
 		a += 2;				// borrow
-		d = (a >> 1) - ((a - b - d) >> 1);
+		carry = (a >> 1) - ((a - b - carry) >> 1);
 	}
 
-	if ((isPositive(x) && isNegative(y) && isNegative(dif)) ||
+	/*if ((isPositive(x) && isNegative(y) && isNegative(dif)) ||
 		(isNegative(x) && isPositive(y) && isPositive(dif))) {
 		cout << "\aWarning: overflow" << endl;
-	}
+	}*/
 
 	return dif;
 }
@@ -386,10 +427,10 @@ QInt operator*(QInt x, QInt y) {
 		
 		q_ = q;
 
-		Q = logicalShiftRight(Q, 1);
+		Q = logicalShiftRight(Q, toQInt(1));
 		Q.data[0] |= A.data[DATA_COUNT - 1] << 31;
 
-		A = A >> 1;
+		A = A >> toQInt(1);
 	}
 
 	return Q;
@@ -400,17 +441,17 @@ QInt operator*(QInt x, QInt y) {
 QInt operator/(QInt x, QInt y) {
 	if (isZero(x))		// return 0 if x == 0
 		return x;
-	if (isZero(y))		// warn if y == 0
-		throw "Divisor cannot be zero!";
+	//if (isZero(y))		// warn if y == 0
+	//	throw "Divisor cannot be zero!";
 
 	bool is_negative = isNegative(x) ^ isNegative(y);		// sign of the quotient
 
 	QInt one;			// 1
 	one.data[DATA_COUNT - 1] = 1;
 	
-	if (isNegative(x))
+	if (isNegative(x) && !isMinQInt(x))
 		x = ~(x - one);		// covert the negative to the positive
-	if (isNegative(y))
+	if (isNegative(y) && !isMinQInt(y))
 		y = ~(y - one);		// covert the negative to the positive
 
 	
@@ -420,9 +461,9 @@ QInt operator/(QInt x, QInt y) {
 
 	for (int i = 0; i < BIT_COUNT; ++i) {
 		// logicalShiftLeft A, Q
-		A = A << 1;
+		A = A << toQInt(1);
 		A.data[DATA_COUNT - 1] |= Q.data[0] >> (UINT_BIT_SIZE - 1);
-		Q = Q << 1;
+		Q = Q << toQInt(1);
 
 		A = A - M;
 
@@ -435,7 +476,7 @@ QInt operator/(QInt x, QInt y) {
 		}
 	}
 
-	if (is_negative)
+	if (is_negative && !isMinQInt(Q))
 		Q = ~(Q - one);		// convert the positive (result) to the negative
 
 	return Q;
@@ -558,22 +599,32 @@ QInt operator~(QInt x) {
 
 
 /* j. Shift left << (arithmetic) */
-QInt operator<<(QInt x, int shift_bit_num) {
+QInt operator<<(QInt x, QInt shift_bit_num) {
 	return logicalShiftLeft(x, shift_bit_num);
 }
 
 /* Logical shift left */
-QInt logicalShiftLeft(QInt x, int shift_bit_num) {
-	// Convert shift_bit_num to [0, BIT_COUNT - 1]
-	while (shift_bit_num < 0)
-		shift_bit_num += BIT_COUNT;
-	shift_bit_num %= BIT_COUNT;
-	
-	if (shift_bit_num == 0)
+QInt logicalShiftLeft(QInt x, QInt shift_bit_num) {
+	// Convert shift_bit_num to a number in range [0, BIT_COUNT - 1]
+	QInt bit_count = toQInt(BIT_COUNT);
+
+	if (isMinQInt(shift_bit_num) || isZero(shift_bit_num))
 		return x;
 
-	int q = shift_bit_num / 32;
-	int r = shift_bit_num % 32;
+	if (!(shift_bit_num == toQInt(1))) {
+		if (isNegative(shift_bit_num)) {
+			QInt positive = ~(shift_bit_num - toQInt(1));
+			QInt quotient = (positive + bit_count - toQInt(1)) / bit_count;
+			shift_bit_num = shift_bit_num + (bit_count * quotient);
+		}
+		else {
+			QInt quotient = shift_bit_num / bit_count;
+			shift_bit_num = shift_bit_num - (bit_count * quotient);
+		}
+	}
+
+	int q = toInt(shift_bit_num) / 32;
+	int r = toInt(shift_bit_num) % 32;
 	int i = q;
 
 	while (i < DATA_COUNT - 1) {
@@ -597,21 +648,32 @@ QInt logicalShiftLeft(QInt x, int shift_bit_num) {
 }
 
 /* j. Shift right >> (arithmetic) */
-QInt operator>>(QInt x, int shift_bit_num) {
+QInt operator>>(QInt x, QInt shift_bit_num) {
 	bool is_negative = isNegative(x);
 
 	x = logicalShiftRight(x, shift_bit_num);
 
 	if (is_negative) {
-		while (shift_bit_num < 0)
-			shift_bit_num += BIT_COUNT;
+		// Convert shift_bit_num to a number in range [0, BIT_COUNT - 1]
+		QInt bit_count = toQInt(BIT_COUNT);
 
-		shift_bit_num %= BIT_COUNT;
-
-		if (shift_bit_num == 0)
+		if (isMinQInt(shift_bit_num) || isZero(shift_bit_num))
 			return x;
 
-		for (int j = 0; j < shift_bit_num; ++j) {
+		if (!(shift_bit_num == toQInt(1))) {
+			if (isNegative(shift_bit_num)) {
+				QInt positive = ~(shift_bit_num - toQInt(1));
+				QInt quotient = (positive + bit_count - toQInt(1)) / bit_count;
+				shift_bit_num = shift_bit_num + (bit_count * quotient);
+			}
+			else {
+				QInt quotient = shift_bit_num / bit_count;
+				shift_bit_num = shift_bit_num - (bit_count * quotient);
+			}
+		}
+
+		int count = toInt(shift_bit_num);
+		for (int j = 0; j < count; ++j) {
 			x.data[j / 32] |= (1 << (31 - j % 32));
 		}
 	}
@@ -620,17 +682,28 @@ QInt operator>>(QInt x, int shift_bit_num) {
 }
 
 /* Logical shift right */
-QInt logicalShiftRight(QInt x, int shift_bit_num) {
-	while (shift_bit_num < 0)
-		shift_bit_num += BIT_COUNT;
+QInt logicalShiftRight(QInt x, QInt shift_bit_num) {
+	// Convert shift_bit_num to a number in range [0, BIT_COUNT - 1]
+	QInt bit_count = toQInt(BIT_COUNT);
 
-	shift_bit_num %= BIT_COUNT;
-
-	if (shift_bit_num == 0)
+	if (isMinQInt(shift_bit_num) || isZero(shift_bit_num))
 		return x;
 
-	int q = shift_bit_num / 32;
-	int r = shift_bit_num % 32;
+	if (!(shift_bit_num == toQInt(1))) {
+		if (isNegative(shift_bit_num)) {
+			QInt positive = ~(shift_bit_num - toQInt(1));
+			QInt quotient = (positive + bit_count - toQInt(1)) / bit_count;
+			shift_bit_num = shift_bit_num + (bit_count * quotient);
+		}
+		else {
+			QInt quotient = shift_bit_num / bit_count;
+			shift_bit_num = shift_bit_num - (bit_count * quotient);
+		}
+	}
+
+
+	int q = toInt(shift_bit_num) / 32;
+	int r = toInt(shift_bit_num) % 32;
 	int i = DATA_COUNT - 1 - q;
 
 	while (i > 0) {
@@ -655,18 +728,18 @@ QInt logicalShiftRight(QInt x, int shift_bit_num) {
 
 
 /* j. Rotate left */
-QInt rol(QInt x, int rotate_bit_num) {
+QInt rol(QInt x, QInt rotate_bit_num) {
 	QInt a = logicalShiftLeft(x, rotate_bit_num);
-	QInt b = logicalShiftRight(x, BIT_COUNT - rotate_bit_num);
+	QInt b = logicalShiftRight(x, toQInt(BIT_COUNT) - rotate_bit_num);
 
 	return a | b;
 }
 
 
 /* j. Rotate right */
-QInt ror(QInt x, int rotate_bit_num) {
+QInt ror(QInt x, QInt rotate_bit_num) {
 	QInt a = logicalShiftRight(x, rotate_bit_num);
-	QInt b = logicalShiftLeft(x, BIT_COUNT - rotate_bit_num);
+	QInt b = logicalShiftLeft(x, toQInt(BIT_COUNT) - rotate_bit_num);
 
 	return a | b;
 }
