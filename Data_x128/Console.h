@@ -41,6 +41,14 @@ bool isHexNumber(string hex_str);
 
 bool isNumber(string num, Base base);
 
+void fillStrWithZeroAtFront(string& str, int size);
+
+void normalizeBinString(string& bin_str);
+
+void normalizeHexString(string& hex_str);
+
+bool scanBinNumber(QInt& x, string str);
+
 void printQInt(QInt x, Base base);
 
 

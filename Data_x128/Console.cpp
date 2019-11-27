@@ -153,9 +153,42 @@ bool isNumber(string num, Base base) {
 }
 
 
-/* Input a number in binary base and check if it is overflow */
-bool scanBinNumber(QInt x, string str) {
+/* Fill a string with zero at front */
+void fillStrWithZeroAtFront(string& str, int size) {
+	string temp(size, '0');
 
+	int i = size - 1;
+	int j = str.size() - 1;
+
+	while (i >= 0 && j >= 0) {
+		temp[i] = str[j];
+		--i;
+		--j;
+	}
+
+	str = temp;
+}
+
+/* Normalize a binary string (size = 128) <bin_str must be valid> */
+void normalizeBinString(string& bin_str) {
+	fillStrWithZeroAtFront(bin_str, BIT_COUNT);
+}
+
+
+/* Normalize a hexadecimal string (size = 32) <hex_str must be valid> */
+void normalizeHexString(string& hex_str) {
+	fillStrWithZeroAtFront(hex_str, BIT_COUNT / 4);
+}
+
+
+/* Input a number in binary base and check if it is overflow */
+bool scanBinNumber(QInt& x, string bin_str) {
+	if (!isNumber(bin_str, Base::BINARY))
+		return false;
+
+
+
+	return true;
 }
 
 
