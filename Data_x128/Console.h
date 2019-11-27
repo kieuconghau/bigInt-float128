@@ -3,6 +3,7 @@
 #include "QInt.h"
 #include "Qfloat.h"
 #include "Graphic.h"
+#include <fstream>
 
 enum class Mode {
 	QINT,
@@ -18,8 +19,9 @@ enum class Base {
 static Mode _MODE_ = Mode::QINT;
 static Base _BASE_ = Base::DECIMAL;
 
+static ofstream _BUG_LOG_;
+static string _BUG_LOG_FILENAME_ = "BugLog.txt";
 
-bool isNumber(string s);
 
 bool isInRange(string s, int start, int end);
 
@@ -31,10 +33,20 @@ void printStatus();
 
 void printLine();
 
+bool isBinNumber(string bin);
+
+bool isDecNumber(string dec_str);
+
+bool isHexNumber(string hex_str);
+
+bool isNumber(string num, Base base);
+
+void printQInt(QInt x, Base base);
+
 
 void consoleMode();
 
-void menuMain();
+void menuHome();
 
 void menuMode();
 
@@ -43,3 +55,5 @@ void menuQInt();
 void menuExchangeBase();
 
 void menuConvert();
+
+void menuConvertToBin();
