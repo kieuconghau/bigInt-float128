@@ -54,6 +54,10 @@ void normalizeBinString(string& bin_str);
 
 void normalizeHexString(string& hex_str);
 
+void denormalizeBinString(string& bin_str);
+
+void denormalizeHexString(string& hex_string);
+
 NumberStatus scanBinNumber(QInt& x, string str);
 
 NumberStatus scanDecNumber(QInt& x, string dec_str);
@@ -78,4 +82,5 @@ void menuExchangeBase();
 void menuConvert();
 
 void menuConvertToBin();
+
 

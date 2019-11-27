@@ -181,6 +181,20 @@ void normalizeHexString(string& hex_str) {
 }
 
 
+/* Denormalize a binary string (erase all 0s at front) */
+void denormalizeBinString(string& bin_str) {
+	while (bin_str[0] == '0')
+		bin_str.erase(bin_str.begin());
+}
+
+
+/* Denormalize a hexadecimal string (erase all 0s at front) */
+void denormalizeHexString(string& hex_string) {
+	while (hex_string[0] == '0')
+		hex_string.erase(hex_string.begin());
+}
+
+
 /* Input a number in binary base and check if it is valid and not overflow */
 NumberStatus scanBinNumber(QInt& x, string bin_str) {
 	if (!isNumber(bin_str, Base::BINARY_))	// Number in binary base?
@@ -253,6 +267,19 @@ NumberStatus scanNumber(QInt& x, string num, Base base) {
 		_BUG_LOG_ << "\abool scanNumber(QInt& x, string num, Base base);" << endl;
 		return NumberStatus::INVALID_;
 	}
+}
+
+
+/* Print a number in binary base */
+void printBinNumber(QInt x, int column, int row) {
+	bool* bit = decToBin(x);
+
+	for (int i = 0; i < DATA_COUNT; ++i) {
+
+	}
+
+
+	delete[] bit;
 }
 
 
