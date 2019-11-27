@@ -13,26 +13,23 @@ bool isInRange(string s, int start, int end) {
 }
 
 
-/* Get the current Mode: OInt or QFloat */
+/* Get mode's name: OInt or QFloat */
 string getMode(Mode mode) {
 	switch (mode)
 	{
 	case Mode::QINT_:
 		return "QInt";
-		break;
 	case Mode::QFLOAT_:
 		return "QFloat";
-		break;
 	default:
 		_BUG_LOG_ << "<string getMode();>" << endl;
 		cout << "\a";
 		return "Bug!!!!!";
-		break;
 	}
 }
 
 
-/* Get the current Base: Bin or Dec or Hex */
+/* Get base's name: Binary or Decimal or Hexadecimal */
 string getBase(Base base) {
 	switch (base)
 	{
@@ -49,7 +46,28 @@ string getBase(Base base) {
 		_BUG_LOG_ << "<sting getBase();>" << endl;
 		cout << "\a";
 		return "Bug!!!!!";
-		break;
+	}
+}
+
+
+/* Get comparison's symbol: < or <= or > or >= or == */
+string getComparisonSymbol(Comparison cmp) {
+	switch (cmp)
+	{
+	case Comparison::LESS_:
+		return "<";
+	case Comparison::LESS_EQUAL_:
+		return "<=";
+	case Comparison::GREATER_:
+		return ">";
+	case Comparison::GREATER_EQUAL_:
+		return ">=";
+	case Comparison::EQUAL_:
+		return "==";
+	default:
+		_BUG_LOG_ << "<string getComparisonSymbol(Comparison cmp);>" << endl;
+		cout << "\a";
+		return "Bug!!!!!";
 	}
 }
 
@@ -72,7 +90,7 @@ void printNotification(NumberStatus num_status) {
 		cout << "\aThe value is invalid. Please input a number in " << getBase() << " base.";
 		break;
 	case NumberStatus::OVERFLOW_:
-		cout << "\aOverflow.";
+		cout << "\aThe value is overflow.";
 		break;
 	default:
 		_BUG_LOG_ << "<void printNotification(NumberStatus num_status);>";
@@ -451,6 +469,8 @@ void menuMode() {
 	}
 }
 
+
+/* Menu: QInt mode */
 void menuQInt() {
 	_MODE_ = Mode::QINT_;
 
@@ -498,7 +518,7 @@ void menuQInt() {
 
 		}
 		else if (c == "4") {
-
+			menuCompare();
 		}
 		else {
 			_BUG_LOG_ << "<void menuQInt()>" << endl;
@@ -508,6 +528,8 @@ void menuQInt() {
 	}
 }
 
+
+/* Menu: Exchange the current base (_BASE_) */
 void menuExchangeBase() {
 	while (true) {
 		string c;
@@ -562,6 +584,7 @@ void menuExchangeBase() {
 	}
 }
 
+/* Menu: Covert */
 void menuConvert() {
 	while (true) {
 		string c;
@@ -597,13 +620,13 @@ void menuConvert() {
 			return;
 		}
 		else if (c == "1") {
-			menuConvertToBase(Base::BINARY_);
+			menuConvert(Base::BINARY_);
 		}
 		else if (c == "2") {
-			menuConvertToBase(Base::DECIMAL_);
+			menuConvert(Base::DECIMAL_);
 		}
 		else if (c == "3") {
-			menuConvertToBase(Base::HEXADECIMAL_);
+			menuConvert(Base::HEXADECIMAL_);
 		}
 		else {
 			_BUG_LOG_ << "<void menuConvert()>" << endl;
@@ -614,21 +637,23 @@ void menuConvert() {
 }
 
 
-/* Menu: Convert to base-n */
-void menuConvertToBase(Base base) {
+/* Menu: Convert to the corresponding base */
+void menuConvert(Base base) {
 	QInt a;
 	QInt b;
 	NumberStatus num_status = NumberStatus::VALID_;
 
 	string c;
 	while (true) {
+		a = b;
+
 		do {
 			system("cls");
 			printEqualLine();
 			printStatus();
 			printEqualLine();
 
-			cout << " Mode > QInt > Convert > To " << getBase(base) << endl;
+			cout << " Mode > QInt > Convert > To " << getBase(base) + " >" << endl;
 			printEqualLine();
 
 			string title = "[ B (" + getBase(_BASE_) + ") -> A (" + getBase(base) + ") ]";
@@ -673,7 +698,174 @@ void menuConvertToBase(Base base) {
 			getline(cin, B_str);
 
 			num_status = scanNumber(b, B_str, _BASE_);
-			a = b;
+		}
+		else {
+			_BUG_LOG_ << "<void menuConvertToBin()>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+/* Menu: Compare 2 QInt */
+void menuCompare() {
+	while (true) {
+		string c;
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QInt > Compare >" << endl;
+			printEqualLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. A = B <  C" << endl;
+			cout << " 2. A = B <= C" << endl;
+			cout << " 3. A = B >  C" << endl;
+			cout << " 4. A = B >= C" << endl;
+			cout << " 5. A = B == C" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, c);
+		} while (!isInRange(c, 0, 5));
+
+		if (c == "0") {
+			return;
+		}
+		else if (c == "1") {
+			menuCompare(Comparison::LESS_);
+		}
+		else if (c == "2") {
+			menuCompare(Comparison::LESS_EQUAL_);
+		}
+		else if (c == "3") {
+			menuCompare(Comparison::GREATER_);
+		}
+		else if (c == "4") {
+			menuCompare(Comparison::GREATER_EQUAL_);
+		}
+		else if (c == "5") {
+			menuCompare(Comparison::EQUAL_);
+		}
+		else {
+			_BUG_LOG_ << "<void menuQInt()>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+/* Menu: Compare 2 QInt with the corresponding operator */
+void menuCompare(Comparison cmp) {
+	bool a = 0;
+	QInt b;
+	QInt c;
+	NumberStatus num_status = NumberStatus::VALID_;
+	string choice;
+
+	while (true) {
+		switch (cmp)
+		{
+		case Comparison::LESS_:
+			a = b < c;
+			break;
+		case Comparison::LESS_EQUAL_:
+			a = b <= c;
+			break;
+		case Comparison::GREATER_:
+			a = b > c;
+			break;
+		case Comparison::GREATER_EQUAL_:
+			a = b >= c;
+			break;
+		case Comparison::EQUAL_:
+			a = b == c;
+			break;
+		default:
+			_BUG_LOG_ << "<void menuCompare(Comparison cmp);>" << endl;
+			cout << "\a";
+			return;
+		}
+		
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QInt > Compare > A = B " << getComparisonSymbol(cmp) << " C >" << endl;
+			printEqualLine();
+
+			string title = "[ A (Bool) = B (" + getBase(_BASE_) + ") " + getComparisonSymbol(cmp) + " C (" + getBase(_BASE_) + ") ]";
+			printTextAtMiddle(whereY(), title, Color::CYAN, true);
+			textColor(_COLOR_);
+			printMinusLine();
+
+			cout << endl;
+			cout << " * B:  ";
+			printNumber(b, _BASE_);		cout << endl;
+			cout << endl;
+
+			cout << " * C:  ";
+			printNumber(c, _BASE_);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * A:  ";
+			a ? cout << "True" << endl : cout << "False" << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * Notification: ";
+			printNotification(num_status);		cout << endl;
+			cout << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. Input B" << endl;
+			cout << " 2. Input C" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 2));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+			printEqualLine();
+
+			cout << " Please input B: ";
+			string B_str;
+			getline(cin, B_str);
+
+			num_status = scanNumber(b, B_str, _BASE_);
+		}
+		else if (choice == "2") {
+			printEqualLine();
+
+			cout << " Please input C: ";
+			string C_str;
+			getline(cin, C_str);
+
+			num_status = scanNumber(c, C_str, _BASE_);
 		}
 		else {
 			_BUG_LOG_ << "<void menuConvertToBin()>" << endl;

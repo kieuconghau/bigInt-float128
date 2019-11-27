@@ -22,6 +22,14 @@ enum class NumberStatus {
 	OVERFLOW_
 };
 
+enum class Comparison {
+	LESS_,
+	LESS_EQUAL_,
+	GREATER_,
+	GREATER_EQUAL_,
+	EQUAL_
+};
+
 static Color _COLOR_ = Color::WHITE;
 
 static Mode _MODE_ = Mode::QINT_;
@@ -36,6 +44,8 @@ bool isInRange(string s, int start, int end);
 string getMode(Mode mode = _MODE_);
 
 string getBase(Base base = _BASE_);
+
+string getComparisonSymbol(Comparison cmp);
 
 void printStatus();
 
@@ -92,7 +102,9 @@ void menuExchangeBase();
 
 void menuConvert();
 
-void menuConvertToBase(Base base);
+void menuConvert(Base base);
 
+void menuCompare();
 
+void menuCompare(Comparison cmp);
 
