@@ -98,6 +98,7 @@ void scanQfloat(Qfloat &x) {
 	string str;
 	cout << "x = "; cin >> str; getchar();
 
+
 	// ==== PROCESS SIGN ====
 	bool sign = (str[0] == '-'); //
 	if (sign) str = str.substr(1, str.size() - 1);
@@ -122,6 +123,8 @@ void scanQfloat(Qfloat &x) {
 	vector <int> _frac(nFrac);
 	vector <bool> binFrac;
 	processFractionalPart(fractional, _frac, binFrac, binInt);
+
+	if (nFrac == 1 && nInt == 1 && _int[0] == 0 && _frac[0] == 0) return; // Qfloat 0
 
 	// ==== PROCESS EXPONENT ====
 	int floating = 0;
