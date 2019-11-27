@@ -428,9 +428,9 @@ QInt operator/(QInt x, QInt y) {
 	QInt one;			// 1
 	one.data[DATA_COUNT - 1] = 1;
 	
-	if (isNegative(x) && !isMinQInt(x))
+	if (isNegative(x))
 		x = ~(x - one);		// covert the negative to the positive
-	if (isNegative(y) && !isMinQInt(y))
+	if (isNegative(y))
 		y = ~(y - one);		// covert the negative to the positive
 
 	
@@ -440,9 +440,9 @@ QInt operator/(QInt x, QInt y) {
 
 	for (int i = 0; i < BIT_COUNT; ++i) {
 		// logicalShiftLeft A, Q
-		A = A << toQInt(1);
+		A = A << 1;
 		A.data[DATA_COUNT - 1] |= Q.data[0] >> (UINT_BIT_SIZE - 1);
-		Q = Q << toQInt(1);
+		Q = Q << 1;
 
 		A = A - M;
 
