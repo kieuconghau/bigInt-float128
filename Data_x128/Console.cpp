@@ -2,7 +2,7 @@
 
 /* Check if a string is a decimal number and in range [start, end] */
 bool isInRange(string s, int start, int end) {
-	if (!isNumber(s, Base::DECIMAL))
+	if (!isNumber(s, Base::DECIMAL_))
 		return false;
 
 	int num = stoi(s);
@@ -14,10 +14,10 @@ bool isInRange(string s, int start, int end) {
 string getMode() {
 	switch (_MODE_)
 	{
-	case Mode::QINT:
+	case Mode::QINT_:
 		return "QInt";
 		break;
-	case Mode::QFLOAT:
+	case Mode::QFLOAT_:
 		return "QFloat";
 		break;
 	default:
@@ -31,13 +31,13 @@ string getMode() {
 string getBase() {
 	switch (_BASE_)
 	{
-	case Base::BINARY:
+	case Base::BINARY_:
 		return "Binary";
 		break;
-	case Base::DECIMAL:
+	case Base::DECIMAL_:
 		return "Decimal";
 		break;
-	case Base::HEXADECIMAL:
+	case Base::HEXADECIMAL_:
 		return "Hexadecimal";
 		break;
 	default:
@@ -83,11 +83,11 @@ bool isHexDigit(char c) {
 bool isDigit(char c, Base base) {
 	switch (base)
 	{
-	case Base::BINARY:
+	case Base::BINARY_:
 		return isBinDigit(c);
-	case Base::DECIMAL:
+	case Base::DECIMAL_:
 		return isDecDigit(c);
-	case Base::HEXADECIMAL:
+	case Base::HEXADECIMAL_:
 		return isHexDigit(c);
 	default:
 		_BUG_LOG_ << "\a<bool isValidDigit(char c, Base base);>" << endl;
@@ -102,7 +102,7 @@ bool isBinNumber(string bin_str) {
 		return false;
 
 	for (int i = 0; i < bin_str.size(); ++i)
-		if (!isDigit(bin_str[i], Base::BINARY))
+		if (!isDigit(bin_str[i], Base::BINARY_))
 			return false;
 	return true;
 }
@@ -118,7 +118,7 @@ bool isDecNumber(string dec_str) {
 		i = 1;
 
 	for ( ; i < dec_str.size(); ++i)
-		if (!isDigit(dec_str[i], Base::DECIMAL))
+		if (!isDigit(dec_str[i], Base::DECIMAL_))
 			return false;
 	return true;
 }
@@ -130,7 +130,7 @@ bool isHexNumber(string hex_str) {
 		return false;
 
 	for (int i = 0; i < hex_str.size(); ++i)
-		if (!isDigit(hex_str[i], Base::HEXADECIMAL))
+		if (!isDigit(hex_str[i], Base::HEXADECIMAL_))
 			return false;
 	return true;
 }
@@ -140,11 +140,11 @@ bool isHexNumber(string hex_str) {
 bool isNumber(string num, Base base) {
 	switch (base)
 	{
-	case Base::BINARY:
+	case Base::BINARY_:
 		return isBinNumber(num);
-	case Base::DECIMAL:
+	case Base::DECIMAL_:
 		return isDecNumber(num);
-	case Base::HEXADECIMAL:
+	case Base::HEXADECIMAL_:
 		return isHexNumber(num);
 	default:
 		_BUG_LOG_ << "\a<bool isNumber(string num, Base base);>" << endl;
@@ -182,12 +182,12 @@ void normalizeHexString(string& hex_str) {
 
 
 /* Input a number in binary base and check if it is valid and not overflow */
-bool scanBinNumber(QInt& x, string bin_str) {
-	if (!isNumber(bin_str, Base::BINARY))	// Number in binary base?
-		return false;
+NumberStatus scanBinNumber(QInt& x, string bin_str) {
+	if (!isNumber(bin_str, Base::BINARY_))	// Number in binary base?
+		return NumberStatus::INVALID_;
 
 	if (bin_str.size() > BIT_COUNT)			// Overflow?
-		return false;
+		return NumberStatus::OVERFLOW_;
 
 	normalizeBinString(bin_str);
 
@@ -200,56 +200,74 @@ bool scanBinNumber(QInt& x, string bin_str) {
 	
 	delete[] bit;
 
-	return true;
+	return NumberStatus::VALID_;
 }
 
 
 /* Input a number in decimal base and check if it is valid and not overflow */
-bool scanDecNumber(QInt& x, string dec_str) {
+NumberStatus scanDecNumber(QInt& x, string dec_str) {
 	if (!isDecNumber(dec_str))				// Number in decimal base?
-		return false;
+		return NumberStatus::INVALID_;
 
 	bool* bit = new bool[BIT_COUNT]();		// Convert string to bool* and check not overflow
 	bool is_not_overflow = decStrToBinStr(dec_str, bit, BIT_COUNT);
 
 	if (!is_not_overflow)
-		return false;
+		return NumberStatus::OVERFLOW_;
 
 	x = binToDecQInt(bit);					// Convert bool* to QInt
 
 	delete[] bit;
 
-	return true;
+	return NumberStatus::VALID_;
 }
 
 
 /* Input a number in hexadecimal base and check if it is valid and not overflow */
-bool scanHexNumber(QInt& x, string hex_str) {
-	if (!isNumber(hex_str, Base::HEXADECIMAL))	// Number in hexadecimal base?
-		return false;
+NumberStatus scanHexNumber(QInt& x, string hex_str) {
+	if (!isNumber(hex_str, Base::HEXADECIMAL_))	// Number in hexadecimal base?
+		return NumberStatus::INVALID_;
 
 	if (hex_str.size() > BIT_COUNT / 4)			// Overflow?
-		return false;
+		return NumberStatus::OVERFLOW_;
 
 	normalizeHexString(hex_str);
 
 	x = hexToDec(hex_str);
 
-	return true;
+	return NumberStatus::VALID_;
 }
+
+
+/* Input a number in a correspoding base and check if it is valid and not overflow */
+NumberStatus scanNumber(QInt& x, string num, Base base) {
+	switch (base)
+	{
+	case Base::BINARY_:
+		return scanBinNumber(x, num);
+	case Base::DECIMAL_:
+		return scanDecNumber(x, num);
+	case Base::HEXADECIMAL_:
+		return scanHexNumber(x, num);
+	default:
+		_BUG_LOG_ << "\abool scanNumber(QInt& x, string num, Base base);" << endl;
+		return NumberStatus::INVALID_;
+	}
+}
+
 
 void printQInt(QInt x, Base base) {
 	string res;
 
 	switch (base)
 	{
-	case Base::BINARY:
+	case Base::BINARY_:
 		printBin(x);
 		break;
-	case Base::DECIMAL:
+	case Base::DECIMAL_:
 		printQInt(x);
 		break;
-	case Base::HEXADECIMAL:
+	case Base::HEXADECIMAL_:
 		cout << decToHex(x) << endl;
 		break;
 	default:
@@ -338,7 +356,7 @@ void menuMode() {
 }
 
 void menuQInt() {
-	_MODE_ = Mode::QINT;
+	_MODE_ = Mode::QINT_;
 
 	while (true) {
 		string c;
@@ -404,15 +422,15 @@ void menuExchangeBase() {
 			return;
 		}
 		else if (c == "1") {
-			_BASE_ = Base::BINARY;
+			_BASE_ = Base::BINARY_;
 			return;
 		}
 		else if (c == "2") {
-			_BASE_ = Base::DECIMAL;
+			_BASE_ = Base::DECIMAL_;
 			return;
 		}
 		else if (c == "3") {
-			_BASE_ = Base::HEXADECIMAL;
+			_BASE_ = Base::HEXADECIMAL_;
 			return;
 		}
 		else {
@@ -484,7 +502,7 @@ void menuConvertToBin() {
 			printQInt(b, _BASE_);
 			printLine();
 			cout << "A: ";
-			printQInt(a, Base::BINARY);
+			printQInt(a, Base::BINARY_);
 			printLine();
 			cout << " Select: ";
 			getline(cin, c);

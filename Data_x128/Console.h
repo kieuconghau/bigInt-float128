@@ -6,18 +6,25 @@
 #include <fstream>
 
 enum class Mode {
-	QINT,
-	QFLOAT
+	QINT_,
+	QFLOAT_
 };
 
 enum class Base {
-	BINARY,
-	DECIMAL,
-	HEXADECIMAL
+	BINARY_,
+	DECIMAL_,
+	HEXADECIMAL_
 };
 
-static Mode _MODE_ = Mode::QINT;
-static Base _BASE_ = Base::DECIMAL;
+enum class NumberStatus {
+	VALID_,					// VALID_ = !(INVALID_ or OVERFLOW_)
+	INVALID_,
+	OVERFLOW_
+};
+
+
+static Mode _MODE_ = Mode::QINT_;
+static Base _BASE_ = Base::DECIMAL_;
 
 static ofstream _BUG_LOG_;
 static string _BUG_LOG_FILENAME_ = "BugLog.txt";
@@ -47,11 +54,13 @@ void normalizeBinString(string& bin_str);
 
 void normalizeHexString(string& hex_str);
 
-bool scanBinNumber(QInt& x, string str);
+NumberStatus scanBinNumber(QInt& x, string str);
 
-bool scanDecNumber(QInt& x, string dec_str);
+NumberStatus scanDecNumber(QInt& x, string dec_str);
 
-bool scanHexNumber(QInt& x, string hex_str);
+NumberStatus scanHexNumber(QInt& x, string hex_str);
+
+NumberStatus scanNumber(QInt& x, string num, Base base);
 
 void printQInt(QInt x, Base base);
 
@@ -69,3 +78,4 @@ void menuExchangeBase();
 void menuConvert();
 
 void menuConvertToBin();
+
