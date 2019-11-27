@@ -1,7 +1,7 @@
 #include "Console.h"
 
 int main() {
-
+  
 	consoleMode();
 
 
