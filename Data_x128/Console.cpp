@@ -1,18 +1,21 @@
 #include "Console.h"
 
+/*====================================================================================================*/
+/*												   SUPPORT                                            */
+/*====================================================================================================*/
+
 /* Check if a string is a decimal number and in range [start, end] */
 bool isInRange(string s, int start, int end) {
 	if (!isNumber(s, Base::DECIMAL_))
 		return false;
 
-	int num = stoi(s);
-	return num >= start && num <= end;
+	return s >= to_string(start) && s <= to_string(end);
 }
 
 
 /* Get the current Mode: OInt or QFloat */
-string getMode() {
-	switch (_MODE_)
+string getMode(Mode mode) {
+	switch (mode)
 	{
 	case Mode::QINT_:
 		return "QInt";
@@ -21,15 +24,17 @@ string getMode() {
 		return "QFloat";
 		break;
 	default:
-		return "\aBug!!!!!";
+		_BUG_LOG_ << "<string getMode();>" << endl;
+		cout << "\a";
+		return "Bug!!!!!";
 		break;
 	}
 }
 
 
 /* Get the current Base: Bin or Dec or Hex */
-string getBase() {
-	switch (_BASE_)
+string getBase(Base base) {
+	switch (base)
 	{
 	case Base::BINARY_:
 		return "Binary";
@@ -41,7 +46,9 @@ string getBase() {
 		return "Hexadecimal";
 		break;
 	default:
-		return "\aBug!!!!!";
+		_BUG_LOG_ << "<sting getBase();>" << endl;
+		cout << "\a";
+		return "Bug!!!!!";
 		break;
 	}
 }
@@ -54,9 +61,36 @@ void printStatus() {
 }
 
 
-/* Display the divider */
-void printLine() {
+/* Display the notification about number status */
+void printNotification(NumberStatus num_status) {
+	switch (num_status)
+	{
+	case NumberStatus::VALID_:
+		cout << "The value is valid.";
+		break;
+	case NumberStatus::INVALID_:
+		cout << "\aThe value is invalid. Please input a number in " << getBase() << " base.";
+		break;
+	case NumberStatus::OVERFLOW_:
+		cout << "\aOverflow.";
+		break;
+	default:
+		_BUG_LOG_ << "<void printNotification(NumberStatus num_status);>";
+		cout << "\a";
+		break;
+	}
+}
+
+/* Display the divider (Equal) */
+void printEqualLine() {
 	string line(getConsoleWidth(), '=');
+	cout << line << endl;
+}
+
+
+/* Display the divider (Underscore) */
+void printMinusLine() {
+	string line(getConsoleWidth(), '-');
 	cout << line << endl;
 }
 
@@ -90,7 +124,8 @@ bool isDigit(char c, Base base) {
 	case Base::HEXADECIMAL_:
 		return isHexDigit(c);
 	default:
-		_BUG_LOG_ << "\a<bool isValidDigit(char c, Base base);>" << endl;
+		_BUG_LOG_ << "<bool isValidDigit(char c, Base base);>" << endl;
+		cout << "\a";
 		return false;
 	}
 }
@@ -147,7 +182,8 @@ bool isNumber(string num, Base base) {
 	case Base::HEXADECIMAL_:
 		return isHexNumber(num);
 	default:
-		_BUG_LOG_ << "\a<bool isNumber(string num, Base base);>" << endl;
+		_BUG_LOG_ << "<bool isNumber(string num, Base base);>" << endl;
+		cout << "\a";
 		return false;
 	}
 }
@@ -264,7 +300,8 @@ NumberStatus scanNumber(QInt& x, string num, Base base) {
 	case Base::HEXADECIMAL_:
 		return scanHexNumber(x, num);
 	default:
-		_BUG_LOG_ << "\a<bool scanNumber(QInt& x, string num, Base base);>" << endl;
+		_BUG_LOG_ << "<bool scanNumber(QInt& x, string num, Base base);>" << endl;
+		cout << "\a";
 		return NumberStatus::INVALID_;
 	}
 }
@@ -316,15 +353,20 @@ void printNumber(QInt x, Base base, int column, int row) {
 		printHexNumber(x, column, row);
 		break;
 	default:
-		_BUG_LOG_ << "\a<void printNumber(QInt x, Base base, int column, int row);>" << endl;
+		_BUG_LOG_ << "<void printNumber(QInt x, Base base, int column, int row);>" << endl;
+		cout << "\a";
 		break;
 	}
 }
 
+/*====================================================================================================*/
+/*                                                   MENU                                             */
+/*====================================================================================================*/
 
 /* Main function */
 void consoleMode() {
-	textColor(Color::WHITE);
+	zoomFullConsoleWindow();
+	textColor(_COLOR_);
 
 	_BUG_LOG_.open(_BUG_LOG_FILENAME_);
 	
@@ -342,13 +384,16 @@ void menuHome() {
 		string c;
 		do {
 			system("cls");
-			printLine();
+			printEqualLine();
+			
 			cout << " Hello hooman!" << endl;
-			printLine();
+			printEqualLine();
+			
 			cout << " 0. Exit" << endl;
 			cout << " 1. Mode" << endl;
 			cout << " 2. Help" << endl;
-			printLine();
+			printEqualLine();
+			
 			cout << " Select: ";
 			getline(cin, c);
 		} while (!isInRange(c, 0, 2));
@@ -363,7 +408,8 @@ void menuHome() {
 
 		}
 		else {
-			_BUG_LOG_ << "\a<void menuMain();>" << endl;
+			_BUG_LOG_ << "<void menuMain();>" << endl;
+			cout << "\a";
 			return;
 		}
 	}
@@ -374,13 +420,16 @@ void menuMode() {
 		string c;
 		do {
 			system("cls");
-			printLine();
+			printEqualLine();
+			
 			cout << " Mode >" << endl;
-			printLine();
+			printEqualLine();
+			
 			cout << " 0. Back" << endl;
 			cout << " 1. QInt" << endl;
 			cout << " 2. QFloat" << endl;
-			printLine();
+			printEqualLine();
+			
 			cout << " Select: ";
 			getline(cin, c);
 		} while (!isInRange(c, 0, 2));
@@ -395,7 +444,8 @@ void menuMode() {
 
 		}
 		else {
-			_BUG_LOG_ << "\a<void menuMode();>" << endl;
+			_BUG_LOG_ << "<void menuMode();>" << endl;
+			cout << "\a";
 			return;
 		}
 	}
@@ -408,17 +458,29 @@ void menuQInt() {
 		string c;
 		do {
 			system("cls");
-			printLine();
+			printEqualLine();
 			printStatus();
-			printLine();
+			printEqualLine();
+			
 			cout << " Mode > QInt >" << endl;
-			printLine();
+			printEqualLine();
+			
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printEqualLine();
+			
 			cout << " 0. Back" << endl;
 			cout << " 1. Exchange base" << endl;
 			cout << " 2. Convert" << endl;
 			cout << " 3. Calculate" << endl;
 			cout << " 4. Compare" << endl;
-			printLine();
+			printEqualLine();
+		
 			cout << " Select: ";
 			getline(cin, c);
 		} while (!isInRange(c, 0, 4));
@@ -439,7 +501,8 @@ void menuQInt() {
 
 		}
 		else {
-			_BUG_LOG_ << "\a<void menuQInt()>" << endl;
+			_BUG_LOG_ << "<void menuQInt()>" << endl;
+			cout << "\a";
 			return;
 		}
 	}
@@ -450,16 +513,28 @@ void menuExchangeBase() {
 		string c;
 		do {
 			system("cls");
-			printLine();
+			printEqualLine();
 			printStatus();
-			printLine();
+			printEqualLine();
+			
 			cout << " Mode > QInt > Exchange base >" << endl;
-			printLine();
+			printEqualLine();
+			
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printEqualLine();
+
 			cout << " 0. Back" << endl;
 			cout << " 1. Binary" << endl;
 			cout << " 2. Decimal" << endl;
 			cout << " 3. Hexadecimal" << endl;
-			printLine();
+			printEqualLine();
+			
 			cout << " Select: ";
 			getline(cin, c);
 		} while (!isInRange(c, 0, 3));
@@ -480,7 +555,8 @@ void menuExchangeBase() {
 			return;
 		}
 		else {
-			_BUG_LOG_ << "\a<void menuExchangeBase()>" << endl;
+			_BUG_LOG_ << "<void menuExchangeBase()>" << endl;
+			cout << "\a";
 			return;
 		}
 	}
@@ -491,16 +567,28 @@ void menuConvert() {
 		string c;
 		do {
 			system("cls");
-			printLine();
+			printEqualLine();
 			printStatus();
-			printLine();
-			cout << " Mode > QInt > Convert" << endl;
-			printLine();
+			printEqualLine();
+			
+			cout << " Mode > QInt > Convert >" << endl;
+			printEqualLine();
+			
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printEqualLine();
+			
 			cout << " 0. Back" << endl;
-			cout << " 1. To binary" << endl;
-			cout << " 2. To decimal" << endl;
-			cout << " 3. To hexadecimal" << endl;
-			printLine();
+			cout << " 1. To Binary" << endl;
+			cout << " 2. To Decimal" << endl;
+			cout << " 3. To Hexadecimal" << endl;
+			printEqualLine();
+			
 			cout << " Select: ";
 			getline(cin, c);
 		} while (!isInRange(c, 0, 3));
@@ -509,47 +597,67 @@ void menuConvert() {
 			return;
 		}
 		else if (c == "1") {
-			menuConvertToBin();
+			menuConvertToBase(Base::BINARY_);
 		}
 		else if (c == "2") {
-
+			menuConvertToBase(Base::DECIMAL_);
 		}
 		else if (c == "3") {
-
-		}
-		else if (c == "4") {
-
+			menuConvertToBase(Base::HEXADECIMAL_);
 		}
 		else {
-			_BUG_LOG_ << "\a<void menuConvert()>" << endl;
+			_BUG_LOG_ << "<void menuConvert()>" << endl;
+			cout << "\a";
 			return;
 		}
 	}
 }
 
-void menuConvertToBin() {
+
+/* Menu: Convert to base-n */
+void menuConvertToBase(Base base) {
 	QInt a;
 	QInt b;
+	NumberStatus num_status = NumberStatus::VALID_;
 
 	string c;
 	while (true) {
 		do {
 			system("cls");
-			printLine();
+			printEqualLine();
 			printStatus();
-			printLine();
-			cout << " Mode > QInt > Convert > To binary" << endl;
-			printLine();
+			printEqualLine();
+
+			cout << " Mode > QInt > Convert > To " << getBase(base) << endl;
+			printEqualLine();
+
+			string title = "[ B (" + getBase(_BASE_) + ") -> A (" + getBase(base) + ") ]";
+			printTextAtMiddle(whereY(), title, Color::CYAN, true);
+			textColor(_COLOR_);
+			printMinusLine();
+
+			cout << endl;
+			cout << " * B:  ";
+			printNumber(b, _BASE_);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * A:  ";
+			printNumber(a, base);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * Notification: ";
+			printNotification(num_status);		cout << endl;
+			cout << endl;
+			printEqualLine();
+
 			cout << " 0. Back" << endl;
 			cout << " 1. Input B" << endl;
-			printLine();
-			cout << " Convert B (" << getBase() << ") to A (Binary): A <- B" << endl << endl;
-			cout << " B: ";
-			printNumber(b, _BASE_);
-			printLine();
-			cout << "A: ";
-			printNumber(a, Base::BINARY_);
-			printLine();
+			printEqualLine();
+
 			cout << " Select: ";
 			getline(cin, c);
 		} while (!isInRange(c, 0, 1));
@@ -558,13 +666,18 @@ void menuConvertToBin() {
 			return;
 		}
 		else if (c == "1") {
-			printLine();
-			cout << " Input B: ";
-			scanQInt(b);
+			printEqualLine();
+
+			cout << " Please input B: ";
+			string B_str;
+			getline(cin, B_str);
+
+			num_status = scanNumber(b, B_str, _BASE_);
 			a = b;
 		}
 		else {
-			_BUG_LOG_ << "\a<void menuConvertToBin()>" << endl;
+			_BUG_LOG_ << "<void menuConvertToBin()>" << endl;
+			cout << "\a";
 			return;
 		}
 	}

@@ -22,6 +22,7 @@ enum class NumberStatus {
 	OVERFLOW_
 };
 
+static Color _COLOR_ = Color::WHITE;
 
 static Mode _MODE_ = Mode::QINT_;
 static Base _BASE_ = Base::DECIMAL_;
@@ -32,13 +33,17 @@ static string _BUG_LOG_FILENAME_ = "BugLog.txt";
 
 bool isInRange(string s, int start, int end);
 
-string getMode();
+string getMode(Mode mode = _MODE_);
 
-string getBase();
+string getBase(Base base = _BASE_);
 
 void printStatus();
 
-void printLine();
+void printNotification(NumberStatus num_status);
+
+void printEqualLine();
+
+void printMinusLine();
 
 bool isBinNumber(string bin);
 
@@ -87,4 +92,7 @@ void menuExchangeBase();
 
 void menuConvert();
 
-void menuConvertToBin();
+void menuConvertToBase(Base base);
+
+
+
