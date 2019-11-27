@@ -35,8 +35,9 @@ string QIntConversion(int p1, int p2, string operand) {
 			delete[] bit;
 		}
 		else if (p2 == 16) {
-			// QInt qint = DecStrToQInt(operand)	// Decimal string -> QInt
-			// result = DecToHex(qint)				// QInt -> Hexadecimal string
+			QInt qint;
+			// qint = DecStrToQInt(operand)		// Decimal string -> QInt
+			result = decToHex(qint);			// QInt -> Hexadecimal string
 		}
 	}
 	else if (p1 == 16) {
@@ -59,8 +60,86 @@ string QIntConversion(int p1, int p2, string operand) {
 	return result;
 }
 
-string QIntBinaryOperation(int p, string operation, string operand_1, string operand_2) {
+string QIntOperation(int p, string operation, string operand_1, string operand_2) {
+	QInt result_qint;
 
+	QInt op_1;
+
+	if (p == 2) {
+		bool* bit = new bool[BIT_COUNT]();
+		// bit = BinStrToBoolArr(operand_1)
+		op_1 = binToDec(bit);
+		delete[] bit;
+	}
+	else if (p == 10) {
+		// op_1 = DecStrToQInt(operand_1)
+	}
+	else if (p == 16) {
+		// op_1 = HexToDec(operand_1)
+	}
+
+
+	if (operation == "~") {
+		result_qint = ~op_1;
+	}
+	else if (operation == "<<" || operation == ">>" || operation == "rol" || operation == "ror") {
+		int op_2 = stoi(operand_2);
+		if (operation == "<<") {
+			result_qint = op_1 << op_2;
+		}
+		else if (operation == ">>") {
+			result_qint = op_1 >> op_2;
+		}
+		else if (operation == "rol") {
+			result_qint = rol(op_1, op_2);
+		}
+		else {
+			result_qint = ror(op_1, op_2);
+		}
+	}
+	else {
+		QInt op_2;
+
+		if (p == 2) {
+			bool* bit = new bool[BIT_COUNT]();
+			// bit = BinStrToBoolArr(operand_2)
+			op_2 = binToDec(bit);
+			delete[] bit;
+		}
+		else if (p == 10) {
+			// op_2 = DecStrToQInt(operand_2)
+		}
+		else if (p == 16) {
+			// op_2 = HexToDec(operand_2)
+		}
+		
+
+		if (operation == "+") {
+			result_qint = op_1 + op_2;
+		}
+		else if (operation == "-") {
+			result_qint = op_1 - op_2;
+		}
+		else if (operation == "*") {
+			result_qint = op_1 * op_2;
+		}
+		else if (operation == "/") {
+			result_qint = op_1 / op_2;
+		}
+		else if (operation == "&") {
+			result_qint = op_1 & op_2;
+		}
+		else if (operation == "|") {
+			result_qint = op_1 | op_2;
+		}
+		else if (operation == "^") {
+			result_qint = op_1 ^ op_2;
+		}
+	}
+
+	string result_string;
+	// result_string = QIntToDecStr(result_qint)
+	return result_string;
 }
 
 void TestMode(char *inputFilename, char* outputFilename, int type) {
@@ -108,9 +187,12 @@ void TestMode(char *inputFilename, char* outputFilename, int type) {
 					result = QFloatConversion(stoi(data_list[0]), stoi(data_list[1]), data_list[2]);
 				}
 			}
+			else if (data_list[1] == "~") {
+				result = QIntOperation(stoi(data_list[0]), data_list[1], data_list[2], "");
+			}
 		}
 		else if (data_list.size() == 4) {
-			result = QIntBinaryOperation(stoi(data_list[0]), data_list[2], data_list[1], data_list[3]);
+			result = QIntOperation(stoi(data_list[0]), data_list[2], data_list[1], data_list[3]);
 		}
 
 		fout << result << endl;
