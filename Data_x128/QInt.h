@@ -34,6 +34,11 @@ bool isOne(string str);
 bool isZero(string str);
 
 
+QInt toQInt(int integer);
+
+int toInt(QInt qint);
+
+
 void scanQInt(QInt& x);
 
 bool decStrToBinStr(string str, bool* bit, int bit_size);
@@ -93,15 +98,15 @@ QInt operator^(QInt x, QInt y);
 QInt operator~(QInt x);
 
 
-QInt operator<<(QInt x, int shift_bit_num);
+QInt operator<<(QInt x, QInt shift_bit_num);
 
-QInt logicalShiftLeft(QInt x, int shift_bit_num);
+QInt logicalShiftLeft(QInt x, QInt shift_bit_num);
 
-QInt operator>>(QInt x, int shift_bit_num);
+QInt operator>>(QInt x, QInt shift_bit_num);
 
-QInt logicalShiftRight(QInt x, int shift_bit_num);
+QInt logicalShiftRight(QInt x, QInt shift_bit_num);
 
-QInt rol(QInt x, int shift_bit_num);
+QInt rol(QInt x, QInt shift_bit_num);
 
-QInt ror(QInt x, int rotate_bit_num);
+QInt ror(QInt x, QInt rotate_bit_num);
 

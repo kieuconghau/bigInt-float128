@@ -1,13 +1,10 @@
-#include "QInt.h"
-#include "Qfloat.h"
+#include "Console.h"
 
 int main() {
-	Qfloat x;
-	scanQfloat(x);
-	printBinaryQfloat(x);
-	cout << endl;
-	printQfloat(x);
-	getchar();
-	getchar();
+  
+	consoleMode();
+
+
+	system("pause");
 	return 0;
 }
