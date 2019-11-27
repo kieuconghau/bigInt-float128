@@ -204,6 +204,25 @@ bool scanBinNumber(QInt& x, string bin_str) {
 }
 
 
+/* Input a number in decimal base and check if it is valid and not overflow */
+bool scanDecNumber(QInt& x, string dec_str) {
+	if (!isDecNumber(dec_str))
+		return false;
+
+	bool* bit = new bool[BIT_COUNT]();		// Convert string to bool* and check not overflow
+	bool is_not_overflow = decStrToBinStr(dec_str, bit, BIT_COUNT);
+
+	if (!is_not_overflow)
+		return false;
+
+	x = binToDecQInt(bit);					// Convert bool* to QInt
+
+	delete[] bit;
+
+	return true;
+}
+
+
 void printQInt(QInt x, Base base) {
 	string res;
 

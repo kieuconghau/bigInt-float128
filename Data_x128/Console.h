@@ -49,6 +49,8 @@ void normalizeHexString(string& hex_str);
 
 bool scanBinNumber(QInt& x, string str);
 
+bool scanDecNumber(QInt& x, string dec_str);
+
 void printQInt(QInt x, Base base);
 
 
