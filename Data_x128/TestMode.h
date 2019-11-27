@@ -17,7 +17,7 @@ QInt HexToDec(string hex);
 bool* HexToBin(string hex);
 
 
-Qfloat FloatStrToQFloat(string float_str);
+Qfloat FloatStrToQFloat(string str);
 
 string QFloatToFloatStr(Qfloat x);
 

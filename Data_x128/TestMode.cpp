@@ -110,12 +110,177 @@ bool* HexToBin(string hex) {
 }
 
 
-Qfloat FloatStrToQFloat(string float_str) {
+/* Copied from scanQfloat */
+Qfloat FloatStrToQFloat(string str) {
+	Qfloat x;
 
+	// ==== PROCESS SIGN ====
+	bool sign = (str[0] == '-'); //
+	if (sign) str = str.substr(1, str.size() - 1);
+	x.data[0] = x.data[0] | (sign << 31);
+
+
+	// ==== SPLIT PART ====
+	int idx_dot = 0; // index of "."
+	while (idx_dot < str.size() && str[idx_dot] != '.') idx_dot++;  // find index of "."
+	if (idx_dot == str.size())str += ".0";
+	string integral = str.substr(0, idx_dot); // integral part of str
+	string fractional = str.substr(idx_dot + 1, str.size() - idx_dot); // fractional part of str
+
+	// ==== PROCESS INTEGRAL PART ====
+	int nInt = (int)((integral.size() % DIGITS == 0) ? (integral.size() / DIGITS) : (integral.size() / DIGITS) + 1); // calc range
+	vector <int> _int(nInt);
+	vector <bool> binInt;
+	processIntegralPart(integral, _int, binInt);
+
+	// ==== PROCESS FRACTIONAL PART ====
+	int nFrac = (int)((fractional.size() % DIGITS == 0) ? (fractional.size() / DIGITS) : (fractional.size() / DIGITS) + 1); // calc range
+	vector <int> _frac(nFrac);
+	vector <bool> binFrac;
+	processFractionalPart(fractional, _frac, binFrac, binInt);
+
+	if (nFrac == 1 && nInt == 1 && binFrac.size() == 0 && binInt.size() == 0) return; // Qfloat 0
+
+	// ==== PROCESS EXPONENT ====
+	int floating = 0;
+	int exponent = 0;
+	if (integral == "0") { // check if 0.xxxx
+		floating = checkUnderflow(binFrac);
+		if (!floating) { // check if Underflow
+			cout << "Error: Underflow" << endl;
+			return;
+		}
+	}
+	else floating = binInt.size() - 1; // dot move to left
+	exponent = (floating > (-pow(2, EXPONENT - 1) + 2)) ? floating + (pow(2, EXPONENT - 1) - 1) : 0; /* Check exponent is normal or denormalized */
+
+	if (exponent > (pow(2, 15) - 1)) {	// check if Overflow
+		cout << "Error: Overflow" << endl;
+		return;
+	}
+
+	vector <int> ex;
+	ex.push_back(exponent);
+
+	for (int i = 15; i >= 1 && !isZero(ex); i--) {
+		if (mod2(ex)) {
+			x.data[0] = x.data[0] | (1 << (31 - i));
+		}
+	}
+
+	// ==== LAST PROCESS ====
+	int bit = 16;
+	for (int i = 1; i < binInt.size(); i++) {
+		int idx = (int)(bit / 32); // index of x.data[]
+		x.data[idx] = x.data[idx] | (binInt[i] << (31 - (bit - 32 * idx)));
+		bit++;
+	}
+
+	int start = 0;
+	if (integral == "0") {
+		start = (floating > (-pow(2, EXPONENT - 1) + 2)) ? (-floating) : (-pow(2, EXPONENT - 1) + 2 - 1);
+	}
+	for (int i = start; (bit <= BITS) && (i < binFrac.size()); i++) {
+		int idx = (int)(bit / 32); // index of x.data[]
+		x.data[idx] = x.data[idx] | (binFrac[i] << (31 - (bit - 32 * idx)));
+		bit++;
+	}
+
+	return x;
 }
 
+/* Copied from printQfloat */
 string QFloatToFloatStr(Qfloat x) {
+	int bit;
+	discrete _x;
 
+	// Calculate EXPONENT
+	int exponent = 0;
+	for (int i = 15; i >= 0; i--) {
+		bit = (x.data[0] >> (31 - i)) & 1;
+		exponent += bit * pow(2, 15 - i);
+	}
+	exponent -= (pow(2, EXPONENT - 1) - 1);
+
+	// Initial
+	if (exponent == -(pow(2, EXPONENT - 1) - 1)) { // Check if Qfloat is Denormalize
+		_x._int.push_back(0); // Initial 0.xxxx
+		exponent++;
+	}
+	else {
+		_x._int.push_back(1); // Initial 1.xxxx
+	}
+	_x._frc.push_back(0); // 0.0 or 1.0
+	discrete temp; // Initial 1.0
+	temp._int.push_back(1);
+	temp._frc.push_back(0);
+
+	// Find index of the first bit 1
+	int i = 16;
+	bit = 0;
+	while (!bit) {
+		int idx = (int)(i / 32);
+		bit = (x.data[idx] >> (31 - (i % 32))) & 1;
+		i++;
+	}
+
+	// Prepare temp = 2^-(idx-16) 
+	if (i <= BITS) {
+		for (int j = 0; j < i - 16; j++) {
+			discreteDivideBy2(temp);
+		}
+		_x = discreteSum(_x, temp);
+	}
+
+	// Calculate SIGNIFICAND
+	while (i < BITS) {
+		int idx = (int)(i / 32);
+		bit = (x.data[idx] >> (31 - (i % 32))) & 1;
+		discreteDivideBy2(temp);
+		if (bit == 1) {
+			_x = discreteSum(_x, temp);
+		}
+
+		i++;
+	}
+
+	// Multiply if 2^x or Divide if 2^-x
+	for (int i = 0; i < abs(exponent); i++) {
+		if (exponent >= 0) {
+			discreteMultiplyBy2(_x);
+		}
+		else {
+			discreteDivideBy2(_x);
+		}
+	}
+
+	// Convert to string
+	string str = "";
+	string _temp;
+	bit = (x.data[0] >> 31) & 1;
+	if (bit == 1) str += "-";
+	for (int i = 0; i < _x._int.size(); i++) {
+		_temp = to_string(_x._int[i]);
+		if (i != 0)
+			while (_temp.size() < DIGITS) _temp.insert(_temp.begin(), '0');
+		str += _temp;
+	}
+	str += ".";
+
+	while ((_x._frc[_x._frc.size() - 1] % 10 == 0) && (_x._frc[_x._frc.size() - 1] != 0))
+		_x._frc[_x._frc.size() - 1] /= 10;
+
+	for (int i = 0; i < _x._frc.size(); i++) {
+		if (_x._frc[i] == 0) continue;
+		_temp = to_string(_x._frc[i]);
+		if (i != _x._frc.size() - 1)
+			while (_temp.size() < DIGITS) _temp.insert(_temp.begin(), '0');
+		str += _temp;
+	}
+
+	if (str[str.size() - 1] == '.') str += "0";
+
+	return str;
 }
 
 string QFloatBoolArrToBinStr(bool* bit) {
@@ -191,10 +356,22 @@ string QFloatConversion(int p1, int p2, string operand) {
 	string result;
 
 	if (p1 == 2 && p2 == 10) {
+		bool* bit = new bool[BIT_COUNT]();
 
+		bit = BinStrToBoolArr(operand);			// Binary string -> Bool*
+		Qfloat qfloat = binToDecQfloat(bit);	// Bool* -> QFloat
+		result = QFloatToFloatStr(qfloat);		// QFloat -> Float string
+
+		delete[] bit;
 	}
 	else if (p1 == 10 && p2 == 2) {
+		bool* bit = new bool[BIT_COUNT]();
 
+		Qfloat qfloat = FloatStrToQFloat(operand);
+		bit = decToBinQfloat(qfloat);			// Decimal string -> Bool*
+		result = QFloatBoolArrToBinStr(bit);	// Bool* -> Binary string
+
+		delete[] bit;
 	}
 
 	return result;
