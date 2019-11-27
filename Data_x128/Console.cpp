@@ -264,7 +264,7 @@ NumberStatus scanNumber(QInt& x, string num, Base base) {
 	case Base::HEXADECIMAL_:
 		return scanHexNumber(x, num);
 	default:
-		_BUG_LOG_ << "\abool scanNumber(QInt& x, string num, Base base);" << endl;
+		_BUG_LOG_ << "\a<bool scanNumber(QInt& x, string num, Base base);>" << endl;
 		return NumberStatus::INVALID_;
 	}
 }
@@ -272,41 +272,55 @@ NumberStatus scanNumber(QInt& x, string num, Base base) {
 
 /* Print a number in binary base */
 void printBinNumber(QInt x, int column, int row) {
-	bool* bit = decToBin(x);
+	bool* bin = decToBin(x);
 
 	for (int i = 0; i < DATA_COUNT; ++i) {
 		gotoXY(column, row + i);
 		
 		for (int j = 0; j < UINT_BIT_SIZE; ++j) {
-			cout << bit[UINT_BIT_SIZE * i + j];
+			cout << bin[UINT_BIT_SIZE * i + j];
 			if (j % 8 == 7)
 				cout << " ";
 		}
 	}
 
-	delete[] bit;
+	delete[] bin;
 }
 
 
-void printQInt(QInt x, Base base) {
-	string res;
+/* Print a number in decimal base */
+void printDecNumber(QInt x, int column, int row) {
+	gotoXY(column, row);
+	printQInt(x);
+}
 
+
+/* Print a number in hexadecimal base */
+void printHexNumber(QInt x, int column, int row) {
+	gotoXY(column, row);
+	cout << decToHex(x);
+}
+
+
+/* Print a number in a correspoding base */
+void printNumber(QInt x, Base base, int column, int row) {
 	switch (base)
 	{
 	case Base::BINARY_:
-		printBin(x);
+		printBinNumber(x, column, row);
 		break;
 	case Base::DECIMAL_:
-		printQInt(x);
+		printDecNumber(x, column, row);
 		break;
 	case Base::HEXADECIMAL_:
-		cout << decToHex(x) << endl;
+		printHexNumber(x, column, row);
 		break;
 	default:
-		cout << "\aBug!!!!! <getQInt>" << endl;
+		_BUG_LOG_ << "\a<void printNumber(QInt x, Base base, int column, int row);>" << endl;
 		break;
 	}
 }
+
 
 /* Main function */
 void consoleMode() {
@@ -531,10 +545,10 @@ void menuConvertToBin() {
 			printLine();
 			cout << " Convert B (" << getBase() << ") to A (Binary): A <- B" << endl << endl;
 			cout << " B: ";
-			printQInt(b, _BASE_);
+			printNumber(b, _BASE_);
 			printLine();
 			cout << "A: ";
-			printQInt(a, Base::BINARY_);
+			printNumber(a, Base::BINARY_);
 			printLine();
 			cout << " Select: ";
 			getline(cin, c);

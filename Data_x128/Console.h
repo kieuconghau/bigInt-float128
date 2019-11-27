@@ -68,7 +68,11 @@ NumberStatus scanNumber(QInt& x, string num, Base base);
 
 void printBinNumber(QInt x, int column = whereX(), int row = whereY());
 
-void printQInt(QInt x, Base base);
+void printDecNumber(QInt x, int column = whereX(), int row = whereY());
+
+void printHexNumber(QInt x, int column = whereX(), int row = whereY());
+
+void printNumber(QInt x, Base base, int column = whereX(), int row = whereY());
 
 
 void consoleMode();
@@ -84,5 +88,3 @@ void menuExchangeBase();
 void menuConvert();
 
 void menuConvertToBin();
-
-

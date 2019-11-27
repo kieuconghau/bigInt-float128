@@ -190,7 +190,7 @@ void printQInt(QInt x) {
 
 	output += str_data[0];
 
-	cout << output << endl;
+	cout << output;
 }
 
 
