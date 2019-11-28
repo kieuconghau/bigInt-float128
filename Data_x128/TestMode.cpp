@@ -283,7 +283,6 @@ string QFloatBoolArrToBinStr(bool* bit) {
 		else {
 			bin_str += '0';
 		}
-		i++;
 	}
 
 	return bin_str;
