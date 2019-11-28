@@ -144,8 +144,14 @@ void printNotification(Notification noti) {
 	case Notification::OVERFLOW_:
 		cout << "\aThe value is overflow.";
 		break;
+	case Notification::UNDERFLOW_:
+		cout << "\aThe value is underflow.";
+		break;
 	case Notification::DIVIDE_BY_ZERO_:
 		cout << "\aCan not divide by zero.";
+		break;
+	case Notification::NOT_BIN_QFLOAT:
+		cout << "\aThe value is invalid. Please input exactly " <<  BIT_COUNT << " bits.";
 		break;
 	case Notification::NONE_:
 		cout << "...";
@@ -517,7 +523,7 @@ void menuMode() {
 			menuQInt();
 		}
 		else if (c == "2") {
-
+			menuQFloat();
 		}
 		else {
 			_BUG_LOG_ << "<void menuMode();>" << endl;
@@ -531,9 +537,11 @@ void menuMode() {
 /* Menu: QInt mode */
 void menuQInt() {
 	_MODE_ = Mode::QINT_;
+	_BASE_ = Base::DECIMAL_;
+	
+	string choice;
 
 	while (true) {
-		string c;
 		do {
 			system("cls");
 			printEqualLine();
@@ -559,19 +567,19 @@ void menuQInt() {
 			printEqualLine();
 		
 			cout << " Select: ";
-			getline(cin, c);
-		} while (!isInRange(c, 0, 3));
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 3));
 
-		if (c == "0") {
+		if (choice == "0") {
 			return;
 		}
-		else if (c == "1") {
+		else if (choice == "1") {
 			menuExchangeBase();
 		}
-		else if (c == "2") {
+		else if (choice == "2") {
 			menuConvert();
 		}
-		else if (c == "3") {
+		else if (choice == "3") {
 			menuCalculate();
 		}
 		else {
@@ -585,8 +593,9 @@ void menuQInt() {
 
 /* Menu: Exchange the current base (_BASE_) */
 void menuExchangeBase() {
+	string choice;
+
 	while (true) {
-		string c;
 		do {
 			system("cls");
 			printEqualLine();
@@ -612,21 +621,21 @@ void menuExchangeBase() {
 			printEqualLine();
 			
 			cout << " Select: ";
-			getline(cin, c);
-		} while (!isInRange(c, 0, 3));
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 3));
 
-		if (c == "0") {
+		if (choice == "0") {
 			return;
 		}
-		else if (c == "1") {
+		else if (choice == "1") {
 			_BASE_ = Base::BINARY_;
 			return;
 		}
-		else if (c == "2") {
+		else if (choice == "2") {
 			_BASE_ = Base::DECIMAL_;
 			return;
 		}
-		else if (c == "3") {
+		else if (choice == "3") {
 			_BASE_ = Base::HEXADECIMAL_;
 			return;
 		}
@@ -640,8 +649,9 @@ void menuExchangeBase() {
 
 /* Menu: Covert */
 void menuConvert() {
+	string choice;
+
 	while (true) {
-		string c;
 		do {
 			system("cls");
 			printEqualLine();
@@ -667,19 +677,19 @@ void menuConvert() {
 			printEqualLine();
 			
 			cout << " Select: ";
-			getline(cin, c);
-		} while (!isInRange(c, 0, 3));
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 3));
 
-		if (c == "0") {
+		if (choice == "0") {
 			return;
 		}
-		else if (c == "1") {
+		else if (choice == "1") {
 			menuConvert(Base::BINARY_);
 		}
-		else if (c == "2") {
+		else if (choice == "2") {
 			menuConvert(Base::DECIMAL_);
 		}
-		else if (c == "3") {
+		else if (choice == "3") {
 			menuConvert(Base::HEXADECIMAL_);
 		}
 		else {
@@ -696,8 +706,8 @@ void menuConvert(Base base) {
 	QInt a;
 	QInt b;
 	Notification noti = Notification::NONE_;
+	string choice;
 
-	string c;
 	while (true) {
 		a = b;
 
@@ -738,13 +748,13 @@ void menuConvert(Base base) {
 			printEqualLine();
 
 			cout << " Select: ";
-			getline(cin, c);
-		} while (!isInRange(c, 0, 1));
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 1));
 
-		if (c == "0") {
+		if (choice == "0") {
 			return;
 		}
-		else if (c == "1") {
+		else if (choice == "1") {
 			printEqualLine();
 
 			cout << " Please input B: ";
@@ -1346,6 +1356,7 @@ void menuBitwiseOperators(Bitwise btw) {
 }
 
 
+/* Menu: bitwise operator NOT */
 void menuBitwiseOperator_NOT() {
 	QInt a;
 	QInt b;
@@ -1413,4 +1424,438 @@ void menuBitwiseOperator_NOT() {
 			return;
 		}
 	}
+}
+
+
+/* Menu: QFloat mode */
+void menuQFloat() {
+	_MODE_ = Mode::QFLOAT_;
+	_BASE_ = Base::DECIMAL_;
+
+	string choice;
+
+	while (true) {
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QFloat >" << endl;
+			printEqualLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. Exchange base" << endl;
+			cout << " 2. Convert" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 2));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+			menuExchangeBaseQFloat();
+		}
+		else if (choice == "2") {
+			menuConvertQFloat();
+		}
+		else {
+			_BUG_LOG_ << "<void menuQFloat();>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+/* Menu: exchange base (qfloat) */
+void menuExchangeBaseQFloat() {
+	string choice;
+
+	while (true) {
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QFloat > Exchange base >" << endl;
+			printEqualLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. Binary" << endl;
+			cout << " 2. Decimal" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 2));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+			_BASE_ = Base::BINARY_;
+			return;
+		}
+		else if (choice == "2") {
+			_BASE_ = Base::DECIMAL_;
+			return;
+		}
+		else {
+			_BUG_LOG_ << "<void menuExchangeBaseQFloat();>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+/* Menu: convert (qfloat) */
+void menuConvertQFloat() {
+	string choice;
+
+	while (true) {
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QFloat > Convert >" << endl;
+			printEqualLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printMinusLine();
+
+			cout << endl << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. To Binary" << endl;
+			cout << " 2. To Decimal" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 2));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+			menuConvertQFloat(Base::BINARY_);
+		}
+		else if (choice == "2") {
+			menuConvertQFloat(Base::DECIMAL_);
+		}
+		else {
+			_BUG_LOG_ << "<void menuConvertQFloat();>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+/* Menu: convert (qfloat) */
+void menuConvertQFloat(Base base) {
+	Qfloat x;
+	Notification noti = Notification::NONE_;
+	string choice;
+
+	while (true) {
+		do {
+			system("cls");
+			printEqualLine();
+			printStatus();
+			printEqualLine();
+
+			cout << " Mode > QFloat > Convert > To " << getBase(base) + " >" << endl;
+			printEqualLine();
+
+			string title = "[ B (" + getBase(_BASE_) + ") -> A (" + getBase(base) + ") ]";
+			printTextAtMiddle(whereY(), title, Color::CYAN, true);
+			textColor(_COLOR_);
+			printMinusLine();
+
+			cout << endl;
+			cout << " * B:  ";
+			printNumber(x, _BASE_);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * A:  ";
+			printNumber(x, base);		cout << endl;
+			cout << endl;
+			printMinusLine();
+
+			cout << endl;
+			cout << " * Notification: ";
+			printNotification(noti);		cout << endl;
+			cout << endl;
+			printEqualLine();
+
+			cout << " 0. Back" << endl;
+			cout << " 1. Input B" << endl;
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 1));
+
+		if (choice == "0") {
+			return;
+		}
+		else if (choice == "1") {
+			printEqualLine();
+
+			cout << " Please input B: ";
+			string B_str;
+			getline(cin, B_str);
+
+			noti = scanNumber(x, B_str, _BASE_);
+		}
+		else {
+			_BUG_LOG_ << "<void menuConvert(Base base);>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+/* Display a qfloat number with the corresponding base */
+void printNumber(Qfloat x, Base base, int column, int row) {
+	switch (base)
+	{
+	case Base::BINARY_:
+		printBinNumber(x, column, row);
+		break;
+	case Base::DECIMAL_:
+		printDecNumber(x, column, row);
+		break;
+	default:
+		_BUG_LOG_ << "<void printNumber(Qfloat x, Base base, int column, int row);>" << endl;
+		cout << "\a";
+		break;
+	}
+}
+
+
+/* Input a qfloat number with the correspoding base */
+Notification scanNumber(Qfloat& x, string num, Base base) {
+	switch (base)
+	{
+	case Base::BINARY_:
+		return scanBinNumber(x, num);
+	case Base::DECIMAL_:
+		return scanDecNumber(x, num);
+	default:
+		_BUG_LOG_ << "<Notification scanNumber(Qfloat& x, string num, Base base);>" << endl;
+		cout << "\a";
+		return Notification::NONE_;
+	}
+}
+
+
+/* Display a qfloat number in binary base */
+void printBinNumber(Qfloat x, int column, int row) {
+	bool* bin = decToBinQfloat(x);
+
+	for (int i = 0; i < DATA_COUNT; ++i) {
+		gotoXY(column, row + i);
+
+		for (int j = 0; j < UINT_BIT_SIZE; ++j) {
+			cout << bin[UINT_BIT_SIZE * i + j];
+			if (j % 8 == 7)
+				cout << " ";
+		}
+	}
+
+	delete[] bin;
+}
+
+
+/* Display a qfloat number in decimal base */
+void printDecNumber(Qfloat x, int column, int row) {
+	gotoXY(column, row);
+	printQfloat(x);
+}
+
+
+/* Input a qfloat number in binary base */
+Notification scanBinNumber(Qfloat& x, string bin_str) {
+	if (!isBinQFloat(bin_str))
+		return Notification::NOT_BIN_QFLOAT;
+
+	Qfloat zero;
+	x = zero;
+
+	bool* bit = new bool[BIT_COUNT]();		// Convert string to bool*
+	for (int i = 0; i < BIT_COUNT; ++i)
+		if (bin_str[i] == '1')
+			bit[i] = 1;
+
+	x = binToDecQfloat(bit);					// Convert bool* to QInt
+
+	delete[] bit;
+
+	return Notification::VALID_NUMBER_;
+}
+
+
+/* Input a qfloat number in decimal base */
+Notification scanDecNumber(Qfloat& x, string dec_str) {
+	if (!isDecQFloat(dec_str))
+		return Notification::NOT_NUMBER_;
+	
+	Qfloat zero;
+	x = zero;
+
+	// ==== PROCESS SIGN ====
+	bool sign = (dec_str[0] == '-'); //
+	if (sign) dec_str = dec_str.substr(1, dec_str.size() - 1);
+	x.data[0] = x.data[0] | (sign << 31);
+
+
+	// ==== SPLIT PART ====
+	int idx_dot = 0; // index of "."
+	while (idx_dot < dec_str.size() && dec_str[idx_dot] != '.') idx_dot++;  // find index of "."
+	if (idx_dot == dec_str.size())dec_str += ".0";
+	string integral = dec_str.substr(0, idx_dot); // integral part of dec_str
+	string fractional = dec_str.substr(idx_dot + 1, dec_str.size() - idx_dot); // fractional part of dec_str
+
+	// ==== PROCESS INTEGRAL PART ====
+	int nInt = (int)((integral.size() % DIGITS == 0) ? (integral.size() / DIGITS) : (integral.size() / DIGITS) + 1); // calc range
+	vector <int> _int(nInt);
+	vector <bool> binInt;
+	processIntegralPart(integral, _int, binInt);
+
+	// ==== PROCESS FRACTIONAL PART ====
+	int nFrac = (int)((fractional.size() % DIGITS == 0) ? (fractional.size() / DIGITS) : (fractional.size() / DIGITS) + 1); // calc range
+	vector <int> _frac(nFrac);
+	vector <bool> binFrac;
+	processFractionalPart(fractional, _frac, binFrac, binInt);
+
+	if (nFrac == 1 && nInt == 1 && binFrac.size() == 0 && binInt.size() == 0)
+		return Notification::VALID_NUMBER_; // Qfloat 0
+
+	// ==== PROCESS EXPONENT ====
+	int floating = 0;
+	int exponent = 0;
+	if (integral == "0") { // check if 0.xxxx
+		floating = checkUnderflow(binFrac);
+		if (!floating) { // check if Underflow
+			//cout << "Error: Underflow" << endl;
+			return Notification::UNDERFLOW_;
+		}
+	}
+	else floating = binInt.size() - 1; // dot move to left
+	exponent = (floating > (-pow(2, EXPONENT - 1) + 2)) ? floating + (pow(2, EXPONENT - 1) - 1) : 0; /* Check exponent is normal or denormalized */
+
+	if (exponent > (pow(2, 15) - 1)) {	// check if Overflow
+		//cout << "Error: Overflow" << endl;
+		return Notification::OVERFLOW_;
+	}
+
+	vector <int> ex;
+	ex.push_back(exponent);
+
+	for (int i = 15; i >= 1 && !isZero(ex); i--) {
+		if (mod2(ex)) {
+			x.data[0] = x.data[0] | (1 << (31 - i));
+		}
+	}
+
+	// ==== LAST PROCESS ====
+	int bit = 16;
+	for (int i = 1; i < binInt.size(); i++) {
+		int idx = (int)(bit / 32); // index of x.data[]
+		x.data[idx] = x.data[idx] | (binInt[i] << (31 - (bit - 32 * idx)));
+		bit++;
+	}
+
+	int start = 0;
+	if (integral == "0") {
+		start = (floating > (-pow(2, EXPONENT - 1) + 2)) ? (-floating) : (-pow(2, EXPONENT - 1) + 2 - 1);
+	}
+	for (int i = start; (bit <= BITS) && (i < binFrac.size()); i++) {
+		int idx = (int)(bit / 32); // index of x.data[]
+		x.data[idx] = x.data[idx] | (binFrac[i] << (31 - (bit - 32 * idx)));
+		bit++;
+	}
+
+	return Notification::VALID_NUMBER_;
+}
+
+
+/* Check if a string is a binary qfloat (128 bits)*/
+bool isBinQFloat(string bin_str) {
+	if (bin_str == "")
+		return false;
+
+	if (bin_str.size() != BIT_COUNT)
+		return false;
+
+	for (int i = 0; i < BIT_COUNT; ++i)
+		if (!isDigit(bin_str[i], Base::BINARY_))
+			return false;
+	return true;
+}
+
+
+/* Check if a string is a decimal qfloat (a.b or a) */
+bool isDecQFloat(string dec_str) {
+	if (dec_str == "")
+		return false;
+
+	int i = 0;
+	if (dec_str[0] == '-')
+		i = 1;
+
+	int dot_count = 0;
+	for ( ; i < dec_str.size(); ++i) {
+		if (dec_str[i] == '.')
+			++dot_count;
+		else if (!isDigit(dec_str[i], Base::DECIMAL_))
+			return false;
+	}
+
+	if (dot_count > 1)
+		return false;
+
+	if (dec_str[0] == '.')		// .b
+		return false;
+	if (dec_str[0] == '-' && dec_str[1] == '.')		// -.b
+		return false;
+	if (dec_str[dec_str.size() - 1] == '.')			// a.
+		return false;
+
+	return true;
 }
