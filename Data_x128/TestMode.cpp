@@ -282,15 +282,14 @@ string QIntConversion(int p1, int p2, string operand) {
 			result = operand;
 		}
 		else {
-			bool* bit = new bool[BIT_COUNT]();
-			bit = BinStrToBoolArr(operand);		// Binary string -> Bool*
+			bool *bit = BinStrToBoolArr(operand);	// Binary string -> Bool*
 
 			if (p2 == 10) {
 				QInt qint = binToDecQInt(bit);		// Bool* -> QInt
-				result = QIntToDecStr(qint);	// QInt -> Decimal string
+				result = QIntToDecStr(qint);		// QInt -> Decimal string
 			}
 			else if (p2 == 16) {
-				result = binToHex(bit);			// Bool* -> Hexadecimal string
+				result = binToHex(bit);				// Bool* -> Hexadecimal string
 			}
 
 			delete[] bit;
@@ -336,7 +335,7 @@ string QFloatConversion(int p1, int p2, string operand) {
 	string result;
 
 	if (p1 == 2 && p2 == 10) {
-		bool* bit = new bool[BIT_COUNT]();
+		bool* bit;
 
 		bit = BinStrToBoolArr(operand);			// Binary string -> Bool*
 		Qfloat qfloat = binToDecQfloat(bit);	// Bool* -> QFloat
@@ -363,9 +362,11 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 	QInt op_1;
 
 	if (p == 2) {
-		bool* bit = new bool[BIT_COUNT]();
+		bool* bit;
+
 		bit = BinStrToBoolArr(operand_1);
 		op_1 = binToDecQInt(bit);
+
 		delete[] bit;
 	}
 	else if (p == 10) {
@@ -400,9 +401,11 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 		QInt op_2;
 
 		if (p == 2) {
-			bool* bit = new bool[BIT_COUNT]();
+			bool* bit;
+
 			bit = BinStrToBoolArr(operand_2);
 			op_2 = binToDecQInt(bit);
+
 			delete[] bit;
 		}
 		else if (p == 10) {
