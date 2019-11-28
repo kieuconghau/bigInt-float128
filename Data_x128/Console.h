@@ -52,7 +52,13 @@ enum class Bitwise {
 	ROTATE_RIGHT_
 };
 
-static Color _COLOR_ = Color::WHITE;
+static Color _COLOR_MAIN_ = Color::WHITE;
+static Color _COLOR_TITLE_ = Color::BLUE;
+static Color _COLOR_FUNCTION_ = Color::BLUE;
+static Color _COLOR_ANSWER_ = Color::CYAN;
+static Color _COLOR_NOTIFICATION_ = Color::GREEN;
+static Color _COLOR_NOTIFICATION_ERROR_ = Color::RED;
+static Color _COLOR_STATUS_ = Color::YELLOW;
 
 static Mode _MODE_ = Mode::QINT_;
 static Base _BASE_ = Base::DECIMAL_;

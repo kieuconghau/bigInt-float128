@@ -123,16 +123,25 @@ string getBitwiseOperatorSymbol(Bitwise btw) {
 
 /* Display the current status (Mode + Base) */
 void printStatus() {
-	cout << " * Mode: " << getMode() << endl;
-	cout << " * Base: " << getBase() << endl;
+	cout << " * Mode: ";
+	textColor(_COLOR_STATUS_);
+	cout << getMode() << endl;
+	textColor(_COLOR_MAIN_);
+	cout << " * Base: ";
+	textColor(_COLOR_STATUS_);
+	cout << getBase() << endl;
+	textColor(_COLOR_MAIN_);
 }
 
 
 /* Display the notification about number status */
 void printNotification(Notification noti) {
+	textColor(_COLOR_NOTIFICATION_ERROR_);
+
 	switch (noti)
 	{
 	case Notification::VALID_NUMBER_:
+		textColor(_COLOR_NOTIFICATION_);
 		cout << "The value is valid.";
 		break;
 	case Notification::NOT_NUMBER_:
@@ -151,6 +160,7 @@ void printNotification(Notification noti) {
 		cout << "\aThe value is invalid. Please input exactly " <<  BIT_COUNT << " bits.";
 		break;
 	case Notification::NONE_:
+		textColor(_COLOR_NOTIFICATION_);
 		cout << "...";
 		break;
 	default:
@@ -158,6 +168,8 @@ void printNotification(Notification noti) {
 		cout << "\a";
 		break;
 	}
+
+	textColor(_COLOR_MAIN_);
 }
 
 /* Display the divider (Equal) */
@@ -442,7 +454,7 @@ void printNumber(QInt x, Base base, int column, int row) {
 /* Main function */
 void consoleMode() {
 	zoomFullConsoleWindow();
-	textColor(_COLOR_);
+	textColor(_COLOR_MAIN_);
 
 	_BUG_LOG_.open(_BUG_LOG_FILENAME_);
 	
@@ -452,6 +464,7 @@ void consoleMode() {
 	}
 
 	menuHome();
+	
 	_BUG_LOG_.close();
 }
 
@@ -465,9 +478,11 @@ void menuHome() {
 			cout << " Hello hooman!" << endl;
 			printEqualLine();
 			
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Exit" << endl;
 			cout << " 1. Mode" << endl;
 			cout << " 2. Help" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 			
 			cout << " Select: ";
@@ -501,9 +516,11 @@ void menuMode() {
 			cout << " Mode >" << endl;
 			printEqualLine();
 			
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. QInt" << endl;
 			cout << " 2. QFloat" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 			
 			cout << " Select: ";
@@ -554,10 +571,12 @@ void menuQInt() {
 			cout << endl << endl;
 			printEqualLine();
 			
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Exchange base" << endl;
 			cout << " 2. Convert" << endl;
 			cout << " 3. Calculate" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 		
 			cout << " Select: ";
@@ -608,10 +627,12 @@ void menuExchangeBase() {
 			cout << endl << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Binary" << endl;
 			cout << " 2. Decimal" << endl;
 			cout << " 3. Hexadecimal" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 			
 			cout << " Select: ";
@@ -664,10 +685,12 @@ void menuConvert() {
 			cout << endl << endl;
 			printEqualLine();
 			
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. To Binary" << endl;
 			cout << " 2. To Decimal" << endl;
 			cout << " 3. To Hexadecimal" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 			
 			cout << " Select: ";
@@ -715,8 +738,8 @@ void menuConvert(Base base) {
 			printEqualLine();
 
 			string title = "[ B (" + getBase(_BASE_) + ") -> A (" + getBase(base) + ") ]";
-			printTextAtMiddle(whereY(), title, Color::CYAN, true);
-			textColor(_COLOR_);
+			printTextAtMiddle(whereY(), title, _COLOR_TITLE_, true);
+			textColor(_COLOR_MAIN_);
 			printMinusLine();
 
 			cout << endl;
@@ -727,7 +750,9 @@ void menuConvert(Base base) {
 
 			cout << endl;
 			cout << " * A:  ";
+			textColor(_COLOR_ANSWER_);
 			printNumber(a, base);		cout << endl;
+			textColor(_COLOR_MAIN_);
 			cout << endl;
 			printMinusLine();
 
@@ -737,8 +762,10 @@ void menuConvert(Base base) {
 			cout << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Input B" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -789,10 +816,12 @@ void menuCalculate() {
 			cout << endl << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Arithmetic operators" << endl;
 			cout << " 2. Relational operators" << endl;
 			cout << " 3. Bitwise operators" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -843,12 +872,14 @@ void menuRelationalOperators() {
 			cout << endl << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. A = B <  C		(Less)" << endl;
 			cout << " 2. A = B <= C		(Less or Equal)" << endl;
 			cout << " 3. A = B >  C		(Greater)" << endl;
 			cout << " 4. A = B >= C		(Greater or Equal)" << endl;
 			cout << " 5. A = B == C		(Equal)" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -924,8 +955,8 @@ void menuRelationalOperators(Relational rel) {
 			printEqualLine();
 
 			string title = "[ A (Bool) = B (" + getBase(_BASE_) + ") " + getRelationalOperatorSymbol(rel) + " C (" + getBase(_BASE_) + ") ]";
-			printTextAtMiddle(whereY(), title, Color::CYAN, true);
-			textColor(_COLOR_);
+			printTextAtMiddle(whereY(), title, _COLOR_TITLE_, true);
+			textColor(_COLOR_MAIN_);
 			printMinusLine();
 
 			cout << endl;
@@ -940,7 +971,9 @@ void menuRelationalOperators(Relational rel) {
 
 			cout << endl;
 			cout << " * A:  ";
+			textColor(_COLOR_ANSWER_);
 			a ? cout << "True" << endl : cout << "False" << endl;
+			textColor(_COLOR_MAIN_);
 			cout << endl;
 			printMinusLine();
 
@@ -950,9 +983,11 @@ void menuRelationalOperators(Relational rel) {
 			cout << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Input B" << endl;
 			cout << " 2. Input C" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -1012,11 +1047,13 @@ void menuArithmeticOperators() {
 			cout << endl << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. A = B + C	(Add)" << endl;
 			cout << " 2. A = B - C	(Substract)" << endl;
 			cout << " 3. A = B * C	(Multiply)" << endl;
 			cout << " 4. A = B / C	(Divide)" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -1094,8 +1131,8 @@ void menuArithmeticOperators(Arithmetic ari) {
 			printEqualLine();
 
 			string title = "[ A (" + getBase(_BASE_) + ") = B (" + getBase(_BASE_) + ") " + getArithmeticOperatorSymbol(ari) + " C (" + getBase(_BASE_) + ") ]";
-			printTextAtMiddle(whereY(), title, Color::CYAN, true);
-			textColor(_COLOR_);
+			printTextAtMiddle(whereY(), title, _COLOR_TITLE_, true);
+			textColor(_COLOR_MAIN_);
 			printMinusLine();
 
 			cout << endl;
@@ -1110,7 +1147,9 @@ void menuArithmeticOperators(Arithmetic ari) {
 
 			cout << endl;
 			cout << " * A:  ";
+			textColor(_COLOR_ANSWER_);
 			printNumber(a, _BASE_);		cout << endl;
+			textColor(_COLOR_MAIN_);
 			cout << endl;
 			printMinusLine();
 
@@ -1120,9 +1159,11 @@ void menuArithmeticOperators(Arithmetic ari) {
 			cout << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Input B" << endl;
 			cout << " 2. Input C" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -1182,6 +1223,7 @@ void menuBitwiseOperators() {
 			cout << endl << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. A = B & C		(And)" << endl;
 			cout << " 2. A = B | C		(Or)" << endl;
@@ -1191,6 +1233,7 @@ void menuBitwiseOperators() {
 			cout << " 6. A = B >> C		(Arithmetic Shift Right)" << endl;
 			cout << " 7. A = B rol C		(Rotate Left)" << endl;
 			cout << " 8. A = B ror C		(Rotate Right)" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -1285,8 +1328,8 @@ void menuBitwiseOperators(Bitwise btw) {
 			printEqualLine();
 
 			string title = "[ A (" + getBase(_BASE_) + ") = B (" + getBase(_BASE_) + ") " + getBitwiseOperatorSymbol(btw) + " C (" + getBase(_BASE_) + ") ]";
-			printTextAtMiddle(whereY(), title, Color::CYAN, true);
-			textColor(_COLOR_);
+			printTextAtMiddle(whereY(), title, _COLOR_TITLE_, true);
+			textColor(_COLOR_MAIN_);
 			printMinusLine();
 
 			cout << endl;
@@ -1301,7 +1344,9 @@ void menuBitwiseOperators(Bitwise btw) {
 
 			cout << endl;
 			cout << " * A:  ";
+			textColor(_COLOR_ANSWER_);
 			printNumber(a, _BASE_);		cout << endl;
+			textColor(_COLOR_MAIN_);
 			cout << endl;
 			printMinusLine();
 
@@ -1311,9 +1356,11 @@ void menuBitwiseOperators(Bitwise btw) {
 			cout << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Input B" << endl;
 			cout << " 2. Input C" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -1370,8 +1417,8 @@ void menuBitwiseOperator_NOT() {
 			printEqualLine();
 
 			string title = "[ A (" + getBase(_BASE_) + ") = ~B (" + getBase(_BASE_) + ") ]";
-			printTextAtMiddle(whereY(), title, Color::CYAN, true);
-			textColor(_COLOR_);
+			printTextAtMiddle(whereY(), title, _COLOR_TITLE_, true);
+			textColor(_COLOR_MAIN_);
 			printMinusLine();
 
 			cout << endl;
@@ -1382,7 +1429,9 @@ void menuBitwiseOperator_NOT() {
 
 			cout << endl;
 			cout << " * A:  ";
+			textColor(_COLOR_ANSWER_);
 			printNumber(a, _BASE_);		cout << endl;
+			textColor(_COLOR_MAIN_);
 			cout << endl;
 			printMinusLine();
 
@@ -1392,8 +1441,10 @@ void menuBitwiseOperator_NOT() {
 			cout << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Input B" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -1447,9 +1498,11 @@ void menuQFloat() {
 			cout << endl << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Exchange base" << endl;
 			cout << " 2. Convert" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -1497,9 +1550,11 @@ void menuExchangeBaseQFloat() {
 			cout << endl << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Binary" << endl;
 			cout << " 2. Decimal" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -1549,9 +1604,11 @@ void menuConvertQFloat() {
 			cout << endl << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. To Binary" << endl;
 			cout << " 2. To Decimal" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
@@ -1593,8 +1650,8 @@ void menuConvertQFloat(Base base) {
 			printEqualLine();
 
 			string title = "[ B (" + getBase(_BASE_) + ") -> A (" + getBase(base) + ") ]";
-			printTextAtMiddle(whereY(), title, Color::CYAN, true);
-			textColor(_COLOR_);
+			printTextAtMiddle(whereY(), title, _COLOR_TITLE_, true);
+			textColor(_COLOR_MAIN_);
 			printMinusLine();
 
 			cout << endl;
@@ -1605,7 +1662,9 @@ void menuConvertQFloat(Base base) {
 
 			cout << endl;
 			cout << " * A:  ";
+			textColor(_COLOR_ANSWER_);
 			printNumber(x, base);		cout << endl;
+			textColor(_COLOR_MAIN_);
 			cout << endl;
 			printMinusLine();
 
@@ -1615,8 +1674,10 @@ void menuConvertQFloat(Base base) {
 			cout << endl;
 			printEqualLine();
 
+			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Back" << endl;
 			cout << " 1. Input B" << endl;
+			textColor(_COLOR_MAIN_);
 			printEqualLine();
 
 			cout << " Select: ";
