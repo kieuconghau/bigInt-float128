@@ -564,7 +564,7 @@ void menuAbout() {
 			textColor(Color::CYAN);
 			cout << "   > 18127017 - Nguyen Hoang Nhan" << endl;
 			cout << "   > 18127259 - Kieu Cong Hau" << endl;
-			cout << "   > 18127263 - Tran Thanh Tam" << endl << endl;
+			cout << "   > 18127268 - Tran Thanh Tam" << endl << endl;
 			textColor(_COLOR_MAIN_);
 			cout << " * Contact:" << endl;
 			cout << "   > " << endl;
