@@ -348,7 +348,7 @@ void printQfloat(Qfloat x) {
 		_x._frc[_x._frc.size() - 1] /= 10;
 
 	for (int i = 0; i < _x._frc.size(); i++) {
-		if (_x._frc[i] == 0) continue;
+		//if (_x._frc[i] == 0) continue;
 		_temp = to_string(_x._frc[i]);
 		if(i != _x._frc.size() - 1)
 			while (_temp.size() < DIGITS) _temp.insert(_temp.begin(), '0');

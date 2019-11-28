@@ -1,10 +1,8 @@
 #include "Console.h"
 
 int main() {
-	//consoleMode();
-	Qfloat x;
-	scanQfloat(x);
-	printQfloat(x);
+	consoleMode();
+	
 
 	system("pause");
 	return 0;
