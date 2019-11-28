@@ -270,7 +270,7 @@ void printQfloat(Qfloat x) {
 
 	// Calculate EXPONENT
 	int exponent = 0;
-	for (int i = 15; i >= 0; i--) {
+	for (int i = 15; i >= 1; i--) {
 		bit = (x.data[0] >> (31 - i)) & 1;
 		exponent += bit * pow(2, 15 - i);
 	}
