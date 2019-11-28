@@ -60,7 +60,12 @@ bool* BinStrToBoolArr(string bin_str) {
 	
 	int j = BIT_COUNT - 1;
 	for (int i = bin_str.size() - 1; i >= 0; i--) {
-		bit[j] = bin_str[i];
+		if (bin_str[i] == '1') {
+			bit[j] = true;
+		}
+		else if (bin_str[i] == '0') {
+			bit[j] = false;
+		}
 		j--;
 	}
 
@@ -76,7 +81,12 @@ string QIntBoolArrToBinStr(bool* bit) {
 	}
 
 	while (i < BIT_COUNT) {
-		bin_str += bit[i];
+		if (bit[i] == true) {
+			bin_str += '1';
+		}
+		else {
+			bin_str += '0';
+		}
 		i++;
 	}
 
@@ -452,7 +462,21 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 	}
 
 	string result_string;
-	result_string = QIntToDecStr(result_qint);
+	if (p == 2) {
+		bool* bit = new bool[BIT_COUNT]();
+
+		bit = decToBin(result_qint);				// Decimal string -> Bool*
+		result_string = QIntBoolArrToBinStr(bit);	// Bool* -> Binary string
+
+		delete[] bit;
+	}
+	else if (p == 10) {
+		result_string = QIntToDecStr(result_qint);
+	}
+	else if (p == 16) {
+		result_string = decToHex(result_qint);
+	}
+	
 	return result_string;
 }
 
@@ -485,6 +509,7 @@ void TestMode(char *inputFilename, char* outputFilename, int type) {
 			string data;
 			while (data_line[i] != ' ' && i < data_line.size()) {
 				data += data_line[i];
+				i++;
 			}
 			data_list.push_back(data);
 		}
