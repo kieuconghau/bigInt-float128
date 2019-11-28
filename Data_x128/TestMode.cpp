@@ -465,7 +465,7 @@ void TestMode(char *inputFilename, char* outputFilename, int type) {
 	}
 
 	ofstream fout;
-	fout.open(inputFilename);
+	fout.open(outputFilename);
 	if (!fout.is_open()) {
 		return;
 	}
