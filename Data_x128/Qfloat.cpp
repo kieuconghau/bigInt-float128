@@ -355,9 +355,12 @@ void printQfloat(Qfloat x) {
 		str += _temp;
 	}
 	
+	// Normalize str (eject all redundant 0s)
+	while (str[str.size() - 1] == '0')
+		str.erase(str.end() - 1);
 	if (str[str.size() - 1] == '.') str += "0";
 
-	cout << str;// << endl;
+	cout << str;
 }
 
 void print(discrete x) {
