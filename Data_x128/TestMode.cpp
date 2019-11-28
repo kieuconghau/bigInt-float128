@@ -368,6 +368,7 @@ string QFloatConversion(int p1, int p2, string operand) {
 
 string QIntOperation(int p, string operation, string operand_1, string operand_2) {
 	QInt result_qint;
+	string result_string;
 
 	QInt op_1;
 
@@ -390,23 +391,6 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 	if (operation == "~") {
 		result_qint = ~op_1;
 	}
-	/*
-	else if (operation == "<<" || operation == ">>" || operation == "rol" || operation == "ror") {
-		int op_2 = stoi(operand_2);
-		if (operation == "<<") {
-			result_qint = op_1 << op_2;
-		}
-		else if (operation == ">>") {
-			result_qint = op_1 >> op_2;
-		}
-		else if (operation == "rol") {
-			result_qint = rol(op_1, op_2);
-		}
-		else {
-			result_qint = ror(op_1, op_2);
-		}
-	}
-	*/
 	else {
 		QInt op_2;
 
@@ -460,25 +444,42 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 		else if (operation == "rol") {
 			result_qint = rol(op_1, op_2);
 		}
-		else {
+		else if (operation == "ror") {
 			result_qint = ror(op_1, op_2);
+		}
+		else if (operation == "<") {
+			result_string = (op_1 < op_2) ? "1" : "0";
+		}
+		else if (operation == ">") {
+			result_string = (op_1 > op_2) ? "1" : "0";
+		}
+		else if (operation == "==") {
+			result_string = (op_1 == op_2) ? "1" : "0";
+		}
+		else if (operation == "<=") {
+			result_string = (op_1 <= op_2) ? "1" : "0";
+		}
+		else if (operation == ">=") {
+			result_string = (op_1 >= op_2) ? "1" : "0";
 		}
 	}
 
-	string result_string;
-	if (p == 2) {
-		bool* bit = new bool[BIT_COUNT]();
+	if (operation != "<" || operation != ">" || operation != "==" || operation != "<=" 
+		|| operation != ">=") {
+		if (p == 2) {
+			bool* bit = new bool[BIT_COUNT]();
 
-		bit = decToBin(result_qint);				// Decimal string -> Bool*
-		result_string = QIntBoolArrToBinStr(bit);	// Bool* -> Binary string
+			bit = decToBin(result_qint);				// Decimal string -> Bool*
+			result_string = QIntBoolArrToBinStr(bit);	// Bool* -> Binary string
 
-		delete[] bit;
-	}
-	else if (p == 10) {
-		result_string = QIntToDecStr(result_qint);
-	}
-	else if (p == 16) {
-		result_string = decToHex(result_qint);
+			delete[] bit;
+		}
+		else if (p == 10) {
+			result_string = QIntToDecStr(result_qint);
+		}
+		else if (p == 16) {
+			result_string = decToHex(result_qint);
+		}
 	}
 	
 	return result_string;
