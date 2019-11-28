@@ -410,21 +410,25 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 	else {
 		QInt op_2;
 
-		if (p == 2) {
-			bool* bit;
-
-			bit = BinStrToBoolArr(operand_2);
-			op_2 = binToDecQInt(bit);
-
-			delete[] bit;
-		}
-		else if (p == 10) {
+		if (operation == "<<" || operation == ">>" || operation == "rol" || operation == "ror") {
 			op_2 = DecStrToQInt(operand_2);
 		}
-		else if (p == 16) {
-			op_2 = hexToDec(operand_2);
+		else {
+			if (p == 2) {
+				bool* bit;
+
+				bit = BinStrToBoolArr(operand_2);
+				op_2 = binToDecQInt(bit);
+
+				delete[] bit;
+			}
+			else if (p == 10) {
+				op_2 = DecStrToQInt(operand_2);
+			}
+			else if (p == 16) {
+				op_2 = hexToDec(operand_2);
+			}
 		}
-		
 
 		if (operation == "+") {
 			result_qint = op_1 + op_2;
