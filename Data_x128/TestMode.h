@@ -1,4 +1,6 @@
 #pragma once
+#include "QInt.h"
+#include "Qfloat.h"
 #include <fstream>
 #include <string>
 #include <vector>
@@ -11,8 +13,6 @@ string QIntToDecStr(QInt x);
 bool* BinStrToBoolArr(string bin_str);
 
 string QIntBoolArrToBinStr(bool* bit);
-
-QInt HexToDec(string hex);
 
 bool* HexToBin(string hex);
 

@@ -1,6 +1,4 @@
 #include "TestMode.h"
-#include "QInt.h"
-#include "Qfloat.h"
 
 /* Almost the same as scanQInt */
 QInt DecStrToQInt(string dec_str) {
@@ -85,26 +83,8 @@ string QIntBoolArrToBinStr(bool* bit) {
 	return bin_str;
 }
 
-QInt HexToDec(string hex) {
-	QInt res;
-
-	int i = hex.size() - 1;
-	int j = BIT_COUNT - 1;
-	uint32_t temp;
-
-	while (i >= 0 && j >= 0) {
-		temp = hex[i] >= '0' && hex[i] <= '9' ? hex[i] - '0' : hex[i] - 'A' + 10;
-		res.data[j / 32] |= temp << (31 - j % 32);		// 0, 4, 8, 12, 16, 20, 24, 28
-
-		--i;
-		j -= 4;
-	}
-
-	return res;
-}
-
 bool* HexToBin(string hex) {
-	QInt x = HexToDec(hex);
+	QInt x = hexToDec(hex);
 	
 	return decToBin(x);
 }
@@ -139,7 +119,7 @@ Qfloat FloatStrToQFloat(string str) {
 	vector <bool> binFrac;
 	processFractionalPart(fractional, _frac, binFrac, binInt);
 
-	if (nFrac == 1 && nInt == 1 && binFrac.size() == 0 && binInt.size() == 0) return; // Qfloat 0
+	if (nFrac == 1 && nInt == 1 && binFrac.size() == 0 && binInt.size() == 0) return x; // Qfloat 0
 
 	// ==== PROCESS EXPONENT ====
 	int floating = 0;
@@ -148,7 +128,7 @@ Qfloat FloatStrToQFloat(string str) {
 		floating = checkUnderflow(binFrac);
 		if (!floating) { // check if Underflow
 			cout << "Error: Underflow" << endl;
-			return;
+			return x;
 		}
 	}
 	else floating = binInt.size() - 1; // dot move to left
@@ -156,7 +136,7 @@ Qfloat FloatStrToQFloat(string str) {
 
 	if (exponent > (pow(2, 15) - 1)) {	// check if Overflow
 		cout << "Error: Overflow" << endl;
-		return;
+		return x;
 	}
 
 	vector <int> ex;
@@ -344,7 +324,7 @@ string QIntConversion(int p1, int p2, string operand) {
 			delete[] bit;
 		}
 		else if (p2 == 10) {
-			QInt qint = HexToDec(operand);	// Hexadecimal string -> QInt
+			QInt qint = hexToDec(operand);	// Hexadecimal string -> QInt
 			result = QIntToDecStr(qint);	// QInt -> Decimal string
 		}
 	}
@@ -392,7 +372,7 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 		op_1 = DecStrToQInt(operand_1);
 	}
 	else if (p == 16) {
-		op_1 = HexToDec(operand_1);
+		op_1 = hexToDec(operand_1);
 	}
 
 
@@ -429,7 +409,7 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 			op_2 = DecStrToQInt(operand_2);
 		}
 		else if (p == 16) {
-			op_2 = HexToDec(operand_2);
+			op_2 = hexToDec(operand_2);
 		}
 		
 
