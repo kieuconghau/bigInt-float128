@@ -470,8 +470,7 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 		}
 	}
 
-	if (operation != "<" || operation != ">" || operation != "==" || operation != "<=" 
-		|| operation != ">=") {
+	if (operation != "<" && operation != ">" && operation != "==" && operation != "<=" && operation != ">=") {
 		if (p == 2) {
 			bool* bit = new bool[BIT_COUNT]();
 
