@@ -95,6 +95,9 @@ int checkUnderflow(vector <bool> binFrac) {
 
 /* a. Scan Qfloat */
 void scanQfloat(Qfloat &x) {
+	Qfloat zero;
+	x = zero;
+	
 	string str;
 	cout << "x = "; cin >> str; getchar();
 
@@ -270,7 +273,7 @@ void printQfloat(Qfloat x) {
 
 	// Calculate EXPONENT
 	int exponent = 0;
-	for (int i = 15; i >= 0; i--) {
+	for (int i = 15; i >= 1; i--) {
 		bit = (x.data[0] >> (31 - i)) & 1;
 		exponent += bit * pow(2, 15 - i);
 	}
@@ -345,16 +348,19 @@ void printQfloat(Qfloat x) {
 		_x._frc[_x._frc.size() - 1] /= 10;
 
 	for (int i = 0; i < _x._frc.size(); i++) {
-		if (_x._frc[i] == 0) continue;
+		//if (_x._frc[i] == 0) continue;
 		_temp = to_string(_x._frc[i]);
 		if(i != _x._frc.size() - 1)
 			while (_temp.size() < DIGITS) _temp.insert(_temp.begin(), '0');
 		str += _temp;
 	}
 	
+	// Normalize str (eject all redundant 0s)
+	while (str[str.size() - 1] == '0')
+		str.erase(str.end() - 1);
 	if (str[str.size() - 1] == '.') str += "0";
 
-	cout << str << endl;
+	cout << str;
 }
 
 void print(discrete x) {
