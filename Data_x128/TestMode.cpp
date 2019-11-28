@@ -539,6 +539,9 @@ void TestMode(char *inputFilename, char* outputFilename, int type) {
 			result = QIntOperation(stoi(data_list[0]), data_list[2], data_list[1], data_list[3]);
 		}
 
+		while (result[0] == '0') {
+			result.erase(result.begin());
+		}
 		fout << result << endl;
 	}
 
