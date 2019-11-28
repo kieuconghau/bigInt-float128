@@ -30,4 +30,5 @@ string QFloatConversion(int p1, int p2, string operand);
 
 string QIntOperation(int p, string operation, string operand_1, string operand_2);
 
+
 void TestMode(char *inputFilename, char* outputFilename, int type);

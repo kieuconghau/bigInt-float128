@@ -453,6 +453,7 @@ string QIntOperation(int p, string operation, string operand_1, string operand_2
 	return result_string;
 }
 
+
 void TestMode(char *inputFilename, char* outputFilename, int type) {
 	ifstream fin;
 	fin.open(inputFilename);
