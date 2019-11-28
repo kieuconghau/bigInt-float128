@@ -20,7 +20,9 @@ enum class Notification {
 	VALID_NUMBER_,					// VALID_NUMBER_ = !(NOT_NUMBER_ or OVERFLOW_ or DIVIDE_BY_ZERO_)
 	NOT_NUMBER_,
 	OVERFLOW_,
+	UNDERFLOW_,
 	DIVIDE_BY_ZERO_,
+	NOT_BIN_QFLOAT,
 	NONE_
 };
 
@@ -50,7 +52,13 @@ enum class Bitwise {
 	ROTATE_RIGHT_
 };
 
-static Color _COLOR_ = Color::WHITE;
+static Color _COLOR_MAIN_ = Color::WHITE;
+static Color _COLOR_TITLE_ = Color::BLUE;
+static Color _COLOR_FUNCTION_ = Color::BLUE;
+static Color _COLOR_ANSWER_ = Color::CYAN;
+static Color _COLOR_NOTIFICATION_ = Color::GREEN;
+static Color _COLOR_NOTIFICATION_ERROR_ = Color::RED;
+static Color _COLOR_STATUS_ = Color::YELLOW;
 
 static Mode _MODE_ = Mode::QINT_;
 static Base _BASE_ = Base::DECIMAL_;
@@ -71,6 +79,7 @@ string getArithmeticOperatorSymbol(Arithmetic ari);
 
 string getBitwiseOperatorSymbol(Bitwise btw);
 
+
 void printStatus();
 
 void printNotification(Notification noti);
@@ -79,13 +88,15 @@ void printEqualLine();
 
 void printMinusLine();
 
-bool isBinNumber(string bin);
+
+bool isBinNumber(string bin_str);
 
 bool isDecNumber(string dec_str);
 
 bool isHexNumber(string hex_str);
 
 bool isNumber(string num, Base base);
+
 
 void fillStrWithZeroAtFront(string& str, int size);
 
@@ -97,13 +108,15 @@ void denormalizeBinString(string& bin_str);
 
 void denormalizeHexString(string& hex_string);
 
-Notification scanBinNumber(QInt& x, string str);
+
+Notification scanBinNumber(QInt& x, string bin_str);
 
 Notification scanDecNumber(QInt& x, string dec_str);
 
 Notification scanHexNumber(QInt& x, string hex_str);
 
 Notification scanNumber(QInt& x, string num, Base base);
+
 
 void printBinNumber(QInt x, int column = whereX(), int row = whereY());
 
@@ -114,11 +127,14 @@ void printHexNumber(QInt x, int column = whereX(), int row = whereY());
 void printNumber(QInt x, Base base, int column = whereX(), int row = whereY());
 
 
-void consoleMode();
+void consoleMode();		// MAIN
 
 void menuHome();
 
 void menuMode();
+
+void menuAbout();
+
 
 void menuQInt();
 
@@ -143,3 +159,30 @@ void menuBitwiseOperators();
 void menuBitwiseOperators(Bitwise btw);
 
 void menuBitwiseOperator_NOT();
+
+
+void menuQFloat();
+
+void menuExchangeBaseQFloat();
+
+void menuConvertQFloat();
+
+void menuConvertQFloat(Base base);
+
+
+void printNumber(Qfloat x, Base base, int column = whereX(), int row = whereY());
+
+Notification scanNumber(Qfloat& x, string num, Base base);
+
+void printBinNumber(Qfloat x, int column = whereX(), int row = whereY());
+
+void printDecNumber(Qfloat x, int column = whereX(), int row = whereY());
+
+Notification scanBinNumber(Qfloat& x, string bin_str);
+
+Notification scanDecNumber(Qfloat& x, string dec_str);
+
+bool isBinQFloat(string bin_str);
+
+bool isDecQFloat(string dec_str);
+
