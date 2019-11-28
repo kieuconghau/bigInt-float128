@@ -315,7 +315,7 @@ QInt binToDecQInt(bool* bit) {
 
 /* e. Binary to Hexadecimal */
 string binToHex(bool* bit) {
-	string hex = "0x";
+	string hex;
 
 	for (int i = 0; i < BIT_COUNT; i += 4) {
 		int dec = bit[i + 3] + bit[i + 2] * 2 + bit[i + 1] * 4 + bit[i] * 8;
