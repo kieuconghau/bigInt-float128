@@ -542,6 +542,8 @@ void TestMode(char *inputFilename, char* outputFilename, int type) {
 		while (result[0] == '0') {
 			result.erase(result.begin());
 		}
+		if (result == "")
+			result = "0";
 		fout << result << endl;
 	}
 
