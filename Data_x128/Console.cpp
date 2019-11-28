@@ -481,7 +481,7 @@ void menuHome() {
 			textColor(_COLOR_FUNCTION_);
 			cout << " 0. Exit" << endl;
 			cout << " 1. Mode" << endl;
-			cout << " 2. Help" << endl;
+			cout << " 2. About" << endl;
 			textColor(_COLOR_MAIN_);
 			printEqualLine();
 			
@@ -496,7 +496,7 @@ void menuHome() {
 			menuMode();
 		}
 		else if (c == "2") {
-
+			menuAbout();
 		}
 		else {
 			_BUG_LOG_ << "<void menuHome();>" << endl;
@@ -507,8 +507,9 @@ void menuHome() {
 }
 
 void menuMode() {
+	string choice;
+
 	while (true) {
-		string c;
 		do {
 			system("cls");
 			printEqualLine();
@@ -524,20 +525,69 @@ void menuMode() {
 			printEqualLine();
 			
 			cout << " Select: ";
-			getline(cin, c);
-		} while (!isInRange(c, 0, 2));
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 2));
 
-		if (c == "0") {
+		if (choice == "0") {
 			return;
 		}
-		else if (c == "1") {
+		else if (choice == "1") {
 			menuQInt();
 		}
-		else if (c == "2") {
+		else if (choice == "2") {
 			menuQFloat();
 		}
 		else {
 			_BUG_LOG_ << "<void menuMode();>" << endl;
+			cout << "\a";
+			return;
+		}
+	}
+}
+
+
+/* Menu: About (Contributors) */
+void menuAbout() {
+	string choice;
+
+	while (true) {
+		do {
+			system("cls");
+			printEqualLine();
+
+			cout << " Mode > About >" << endl;
+			printEqualLine();
+
+			cout << endl;
+			cout << " * Project: 128-bit Integer & Quadruple-precision Floating Point Calculator" << endl << endl;
+			cout << " * Contributors:" << endl;
+			textColor(Color::CYAN);
+			cout << "   > 18127017 - Nguyen Hoang Nhan" << endl;
+			cout << "   > 18127259 - Kieu Cong Hau" << endl;
+			cout << "   > 18127263 - Tran Thanh Tam" << endl << endl;
+			textColor(_COLOR_MAIN_);
+			cout << " * Contact:" << endl;
+			cout << "   > " << endl;
+			cout << "   > kieuconghau.it@gmail.com" << endl;
+			cout << "   > " << endl << endl;
+			cout << " * Release date: 28 November 2019" << endl;
+			cout << endl;
+			printEqualLine();
+
+			textColor(_COLOR_FUNCTION_);
+			cout << " 0. Back" << endl;
+			textColor(_COLOR_MAIN_);
+			printEqualLine();
+
+			cout << " Select: ";
+			getline(cin, choice);
+		} while (!isInRange(choice, 0, 0));
+
+		if (choice == "0") {
+			return;
+		}
+		else {
+			_BUG_LOG_ << "<void menuAbout();>" << endl;
 			cout << "\a";
 			return;
 		}

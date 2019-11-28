@@ -127,11 +127,13 @@ void printHexNumber(QInt x, int column = whereX(), int row = whereY());
 void printNumber(QInt x, Base base, int column = whereX(), int row = whereY());
 
 
-void consoleMode();
+void consoleMode();		// MAIN
 
 void menuHome();
 
 void menuMode();
+
+void menuAbout();
 
 
 void menuQInt();
