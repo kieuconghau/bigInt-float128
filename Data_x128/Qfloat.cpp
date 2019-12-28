@@ -158,7 +158,7 @@ void scanQfloat(Qfloat &x) {
 
 	// ==== LAST PROCESS ====
 	int bit = 16;
-	for (int i = 1; i < binInt.size(); i++) {
+	for (int i = 1; i < (bit <= BITS) && binInt.size(); i++) {
 		int idx = (int)(bit / 32); // index of x.data[]
 		x.data[idx] = x.data[idx] | (binInt[i] << (31 - (bit - 32 * idx)));
 		bit++;

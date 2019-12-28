@@ -160,7 +160,7 @@ Qfloat FloatStrToQFloat(string str) {
 
 	// ==== LAST PROCESS ====
 	int bit = 16;
-	for (int i = 1; i < binInt.size(); i++) {
+	for (int i = 1; (bit <= BITS) && i < binInt.size(); i++) {
 		int idx = (int)(bit / 32); // index of x.data[]
 		x.data[idx] = x.data[idx] | (binInt[i] << (31 - (bit - 32 * idx)));
 		bit++;
@@ -186,7 +186,7 @@ string QFloatToFloatStr(Qfloat x) {
 
 	// Calculate EXPONENT
 	int exponent = 0;
-	for (int i = 15; i >= 0; i--) {
+	for (int i = 15; i >= 1; i--) {
 		bit = (x.data[0] >> (31 - i)) & 1;
 		exponent += bit * pow(2, 15 - i);
 	}
@@ -261,7 +261,7 @@ string QFloatToFloatStr(Qfloat x) {
 		_x._frc[_x._frc.size() - 1] /= 10;
 
 	for (int i = 0; i < _x._frc.size(); i++) {
-		if (_x._frc[i] == 0) continue;
+		//if (_x._frc[i] == 0) continue;
 		_temp = to_string(_x._frc[i]);
 		if (i != _x._frc.size() - 1)
 			while (_temp.size() < DIGITS) _temp.insert(_temp.begin(), '0');
